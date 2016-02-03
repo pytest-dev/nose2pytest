@@ -30,9 +30,17 @@ These will stay and you may have to re-implement if you want to remove any nose 
 - assert_warns_regex
 """
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
+from nose import tools as nosetools
+import argparse
 import logging
+from logging import StreamHandler
+import sys
 
-# FIXER:
+
+log = logging.getLogger('RefactoringTool')
+
+
+# FIXERS:
 
 
 class FixAssertBase(fixer_base.BaseFix):
@@ -65,7 +73,14 @@ class FixAssert1Arg(FixAssertBase):
     power< '{}'
         trailer<
             '('
-            obj1=any
+            arglist<
+                obj1=any
+            >
+            |
+            arglist<
+                obj1=any ','
+                obj2=any
+            >
             ')'
         >
     >
@@ -175,27 +190,49 @@ class NoseConversoinRefactoringTool(refactor.MultiprocessRefactoringTool):
         return pre_fixers, []
 
 
-from nose import tools
-for key in dir(tools):
-    if key.startswith('assert_'):
-        print(key)
-
-flags = dict(print_function = True)
-refac = NoseConversoinRefactoringTool(flags)
-
-test_script = """
+def test():
+    test_script = """
 log.print("hi")
 assert_in(a, b, msg)
+assert_is_none(a, "12345")
+assert_is_none(a)
 """
 
-for key in FixAssert1Arg.conversions:
-    test_script += '{}(123)\n'.format(key)
-for key in FixAssert2Args.conversions:
-    test_script += '{}(123, 456)\n'.format(key)
-print(test_script)
 
-result = refac.refactor_string(test_script, 'script')
-print(result)
+    for key in FixAssert1Arg.conversions:
+        test_script += '{}(123)\n'.format(key)
+    for key in FixAssert2Args.conversions:
+        test_script += '{}(123, 456)\n'.format(key)
+    print(test_script)
 
-# refac.refactor_file(r'test_console\test05_core\test05_logging.py', write=True)
+    result = refac.refactor_string(test_script, 'script')
+    print(result)
+
+
+def setup():
+    for key in dir(nosetools):
+        if key.startswith('assert_'):
+            print(key)
+
+    flags = dict(print_function = True)
+    refac = NoseConversoinRefactoringTool(flags)
+
+    redirect = StreamHandler(stream=sys.stdout)
+    redirect.setLevel(logging.DEBUG)
+    log.addHandler(redirect)
+    log.setLevel(logging.DEBUG)
+
+    parser = argparse.ArgumentParser(description='Convert nose assertions to regular assertions for use by pytest')
+    parser.add_argument('dir_name', type=str,
+                        help='folder name from which to start; all .py files under it will be converted')
+    parser.add_argument('-w', dest='write', action='store_false',
+                        help='disable overwriting of original files')
+
+    return refac, parser.parse_args()
+
+
+refac, args = setup()
+log.info('hello')
+test()
+#refac.refactor_dir(args.dir_name, write=args.write)
 
