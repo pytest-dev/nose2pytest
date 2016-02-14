@@ -94,14 +94,12 @@ class FixAssertBase(fixer_base.BaseFix):
 
     def __init__(self, nose_func_name: str, pytest_func: str, *args, **kwargs):
         self.PATTERN = self.PATTERN.format(nose_func_name)
-        log.info('Will convert {} to ')
+        log.info('%s will convert %s as "assert %s"', self.__class__.__name__, nose_func_name, pytest_func)
         super().__init__(*args, **kwargs)
 
         self.dest_tree = driver.parse_string('assert ' + pytest_func + '\n')
         # remove the \n we added
         del self.dest_tree.children[0].children[1]
-
-        log.info('added ', self.__class__.__name__)
 
     def transform(self, node: PyNode, results: {str: PyNode}) -> PyNode:
         assert results
@@ -262,10 +260,10 @@ def test():
         test_script += '{}(123)\n'.format(key)
     for key in FixAssert2Args.conversions:
         test_script += '{}(123, 456)\n'.format(key)
-    print(test_script)
+    log.info(test_script)
 
     result = refac.refactor_string(test_script, 'script')
-    print(result)
+    log.info(result)
 
 
 def setup():
@@ -276,23 +274,22 @@ def setup():
     #         argspec = inspect.getargspec(getattr(nosetools, key))
     #         print(key, argspec)
 
-    refac = NoseConversionRefactoringTool()
-
     redirect = StreamHandler(stream=sys.stdout)
     redirect.setLevel(logging.DEBUG)
     log.addHandler(redirect)
     log.setLevel(logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='Convert nose assertions to regular assertions for use by pytest')
-    # parser.add_argument('dir_name', type=str,
-    #                     help='folder name from which to start; all .py files under it will be converted')
+    parser.add_argument('dir_name', type=str,
+                        help='folder name from which to start; all .py files under it will be converted')
     parser.add_argument('-w', dest='write', action='store_false',
                         help='disable overwriting of original files')
 
-    return refac, parser.parse_args()
+    return parser.parse_args()
 
 
-refac, args = setup()
-test()
-#refac.refactor_dir(args.dir_name, write=args.write)
+args = setup()
+refac = NoseConversionRefactoringTool()
+# test()
+refac.refactor_dir(args.dir_name, write=args.write)
 
