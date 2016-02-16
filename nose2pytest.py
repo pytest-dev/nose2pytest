@@ -1,7 +1,8 @@
 """
 This script uses lib2to3 utility classes that make transforming specific patterns of Python code to
-other code.
+other code. The following article was also very useful: http://python3porting.com/fixers.html#find-pattern.
 """
+
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
 from lib2to3.pytree import Node as PyNode, Leaf as PyLeaf
 from lib2to3.pgen2 import token
