@@ -191,6 +191,8 @@ class FixAssert2Args(FixAssertBase):
         self._handle_opt_msg(node.children, results)
 
 
+# ------------ Main portion of script -------------------------------
+
 class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
     def __init__(self):
         flags = dict(print_function=True)
