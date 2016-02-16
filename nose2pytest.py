@@ -1,6 +1,10 @@
+# Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see LICENSE file for details).
 """
-This script uses lib2to3 utility classes that make transforming specific patterns of Python code to
-other code. The following article was also very useful: http://python3porting.com/fixers.html#find-pattern.
+This script defines lib2to3 fixers and uses lib2to3 utility classes to transform specific patterns of
+Python AST code for the nose.tools.assert_* functions into raw assert functions that can be executed by
+pytest without all the error-trapping code used by nose.
+
+The following article was very useful: http://python3porting.com/fixers.html#find-pattern.
 """
 
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
