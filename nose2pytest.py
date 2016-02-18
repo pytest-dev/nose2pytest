@@ -13,6 +13,7 @@ import logging
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
 from lib2to3.pytree import Node as PyNode, Leaf as PyLeaf
 from lib2to3.pgen2 import token
+from lib2to3.fixer_util import parenthesize
 
 
 log = logging.getLogger('nose2pytest')
@@ -98,7 +99,18 @@ class FixAssertBase(fixer_base.BaseFix):
         assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
         assert_args = assert_arg_test_node.parent
         self._transform_dest(assert_arg_test_node, results)
+
+        contains_newline = False
+        if contains_newline:
+            assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
+            prefix = assert_arg_test_node.prefix
+            assert_arg_test_node.prefix = ''
+            new_node = parenthesize(assert_arg_test_node.clone())
+            new_node.prefix = prefix
+            assert_arg_test_node.replace(new_node)
+
         self.__handle_opt_msg(assert_args, results)
+
         dest_tree.prefix = node.prefix
         return dest_tree
 
@@ -124,7 +136,7 @@ class FixAssertBase(fixer_base.BaseFix):
             msg = results["msg"]
             msg = msg.clone()
             siblings = assertion_args_node.children
-            siblings.append(PyLeaf(token.STRING, ','))
+            siblings.append(PyLeaf(token.COMMA, ','))
             siblings.append(msg)
 
 
