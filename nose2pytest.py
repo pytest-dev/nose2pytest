@@ -64,6 +64,22 @@ PATTERN_2_OR_3_ARGS = """
     """
 
 
+# for the following node types, contains_newline() will return False even if newlines are between ()[]{}
+NEWLINE_OK_TOKENS = (token.LPAR, token.LSQB, token.LBRACE)
+
+
+def contains_newline(node: PyNode):
+    for child in node.children:
+        if child.type in NEWLINE_OK_TOKENS:
+            return False
+        if '\n' in child.prefix:
+            return True
+        if isinstance(child, PyNode) and contains_newline(child):
+            return True
+
+    return False
+
+
 class FixAssertBase(fixer_base.BaseFix):
     # BM_compatible = True
 
@@ -100,13 +116,12 @@ class FixAssertBase(fixer_base.BaseFix):
         assert_args = assert_arg_test_node.parent
         self._transform_dest(assert_arg_test_node, results)
 
-        contains_newline = False
-        if contains_newline:
-            assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
-            prefix = assert_arg_test_node.prefix
-            assert_arg_test_node.prefix = ''
+        assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
+        if contains_newline(assert_arg_test_node):
+            prefixes = assert_arg_test_node.prefix.split('\n', 1)
+            assert_arg_test_node.prefix = '\n'+prefixes[1] if len(prefixes) > 1 else ''
             new_node = parenthesize(assert_arg_test_node.clone())
-            new_node.prefix = prefix
+            new_node.prefix = prefixes[0] or ' '
             assert_arg_test_node.replace(new_node)
 
         self.__handle_opt_msg(assert_args, results)
@@ -214,10 +229,10 @@ class FixAssert2ArgsAopB(FixAssertBase):
         assert_is=('a is b', (0, 2)),
         assert_is_not=('a is not b', (0, 2)),
 
-        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 1))),
-        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1))),
-        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0))),
-        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0))),
+        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 1), False)),
+        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1), False)),
+        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0), False)),
+        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0), False)),
         assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
         assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
     )
@@ -225,16 +240,28 @@ class FixAssert2ArgsAopB(FixAssertBase):
     @override(FixAssertBase)
     def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
         lhs = results["lhs"]
+        lhs_prefix = lhs.prefix
         lhs = lhs.clone()
-        lhs.prefix = " "
+        lhs.prefix = lhs_prefix + " "
 
         rhs = results["rhs"]
         rhs = rhs.clone()
 
         dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
         dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
-        dest1.replace(lhs)
-        dest2.replace(rhs)
+
+        dest1.replace(self.__group_if_non_leaf(lhs))
+        dest2.replace(self.__group_if_non_leaf(rhs))
+
+    def __group_if_non_leaf(self, node: PyNode or PyLeaf):
+        maybe_needed = len(self._conv_data) <= 2 or self._conv_data[2]
+        if maybe_needed and isinstance(node, PyNode):
+            new_node = parenthesize(node)
+            new_node.prefix = node.prefix
+            node.prefix = ''
+            return new_node
+
+        return node
 
 
 # ------------ Main portion of script -------------------------------

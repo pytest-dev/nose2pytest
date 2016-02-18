@@ -44,6 +44,7 @@ class Test1Arg:
             assert_in(a, b)
             assert_in(a, b, text)
             assert_in(a, b, msg='text')
+            assert_in(a in c, b in c)
             """)
 
         log.info(test_script)
@@ -55,6 +56,32 @@ class Test1Arg:
         log.info('\n'.join(side_by_side))
 
     def test_newline(self):
+        redirect = StreamHandler(stream=sys.stdout)
+        redirect.setLevel(logging.DEBUG)
+        log.addHandler(redirect)
+        log.setLevel(logging.DEBUG)
+
+        test_script = dedent("""
+            assert_in(long_a,
+                      long_b)
+
+            assert_in(
+                long_a, long_b)
+
+            assert_in(a, long_b +
+                         something)
+
+            assert_in(long_a,
+                      long_b + something)
+            """)
+
+        refac = NoseConversionRefactoringTool()
+        result = refac.refactor_string(test_script, 'script')
+        side_by_side = (('{} -> {}'.format(a, b) if a else '')
+                        for a, b in zip(test_script.split('\n'), str(result).split('\n')))
+        log.info('\n'.join(side_by_side))
+
+    def test_binops(self):
         redirect = StreamHandler(stream=sys.stdout)
         redirect.setLevel(logging.DEBUG)
         log.addHandler(redirect)
