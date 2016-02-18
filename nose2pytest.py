@@ -68,7 +68,12 @@ PATTERN_2_OR_3_ARGS = """
 NEWLINE_OK_TOKENS = (token.LPAR, token.LSQB, token.LBRACE)
 
 
-def contains_newline(node: PyNode):
+def contains_newline(node: PyNode) -> bool:
+    """
+    Returns True if any of the children of node have a prefix containing \n, or any of their children recursively.
+    Returns False if no non-bracketed children are found that have such prefix. Example: node of 'a\n  in b' would
+    return True, whereas '(a\n   b)' would return False.
+    """
     for child in node.children:
         if child.type in NEWLINE_OK_TOKENS:
             return False
@@ -89,10 +94,15 @@ class FixAssertBase(fixer_base.BaseFix):
     conversions = None
 
     @classmethod
-    def create_all(cls, options, log):
+    def create_all(cls, *args, **kwargs) -> [fixer_base.BaseFix]:
+        """
+        Create an instance for each key in cls.conversions, assumed to be defined by derived class.
+        The *args and **kwargs are those of BaseFix.
+        :return: list of instances created
+        """
         fixers = []
         for nose_func in cls.conversions:
-            fixers.append(cls(nose_func, options, log))
+            fixers.append(cls(nose_func, *args, **kwargs))
         return fixers
 
     def __init__(self, nose_func_name: str, *args, **kwargs):
@@ -131,9 +141,23 @@ class FixAssertBase(fixer_base.BaseFix):
 
     @override_required
     def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
+        """
+        Transform the given node to use the results.
+        :param assert_arg_test_node: the destination node representing the assertion test argument
+        :param results: the results of pattern matching
+        """
         pass
 
-    def _get_node(self, from_node, indices_path: int or [int]) -> PyLeaf or PyNode:
+    def _get_node(self, from_node, indices_path: None or int or [int]) -> PyLeaf or PyNode:
+        """
+        Get a node relative to another node.
+        :param from_node: the node from which to start
+        :param indices_path: the path through children
+        :return: node found (could be leaf); if indices_path is None, this is from_node itself; if it is a
+            number, return from_node[indices_path]; else returns according to sequence of children indices
+
+        Example: if indices_path is (1, 2, 3), will return from_node.children[1].children[2].children[3].
+        """
         if indices_path is None:
             return from_node
 
@@ -147,6 +171,11 @@ class FixAssertBase(fixer_base.BaseFix):
             return from_node.children[indices_path]
 
     def __handle_opt_msg(self, assertion_args_node: PyNode, results: {str: PyNode}):
+        """
+        Append a message argument to assertion args node, if one appears in results.
+        :param assertion_args_node: the node representing all the arguments of assertion function
+        :param results: results from pattern matching
+        """
         if 'msg' in results:
             msg = results["msg"]
             msg = msg.clone()
@@ -253,7 +282,13 @@ class FixAssert2ArgsAopB(FixAssertBase):
         dest1.replace(self.__group_if_non_leaf(lhs))
         dest2.replace(self.__group_if_non_leaf(rhs))
 
-    def __group_if_non_leaf(self, node: PyNode or PyLeaf):
+    def __group_if_non_leaf(self, node: PyNode or PyLeaf) -> PyNode or PyLeaf:
+        """
+        If the conversion data indicates that a, b should be grouped (wrapped by parentheses), then
+        return node if node is a leaf, and return parenthesized node otherwise.
+        :param node: the node to parenthesize
+        :return: the node for the parenthesized expression, or the node itself
+        """
         maybe_needed = len(self._conv_data) <= 2 or self._conv_data[2]
         if maybe_needed and isinstance(node, PyNode):
             new_node = parenthesize(node)
