@@ -98,21 +98,13 @@ class FixAssertBase(fixer_base.BaseFix):
         assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
         assert_args = assert_arg_test_node.parent
         self._transform_dest(assert_arg_test_node, results)
-        self._handle_opt_msg(assert_args, results)
+        self.__handle_opt_msg(assert_args, results)
         dest_tree.prefix = node.prefix
         return dest_tree
 
     @override_required
     def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
         pass
-
-    def _handle_opt_msg(self, assertion_args_node: PyNode, results: {str: PyNode}):
-        if 'msg' in results:
-            msg = results["msg"]
-            msg = msg.clone()
-            siblings = assertion_args_node.children
-            siblings.append(PyLeaf(token.STRING, ','))
-            siblings.append(msg)
 
     def _get_node(self, from_node, indices_path: int or [int]) -> PyLeaf or PyNode:
         if indices_path is None:
@@ -126,6 +118,14 @@ class FixAssertBase(fixer_base.BaseFix):
 
         except TypeError:
             return from_node.children[indices_path]
+
+    def __handle_opt_msg(self, assertion_args_node: PyNode, results: {str: PyNode}):
+        if 'msg' in results:
+            msg = results["msg"]
+            msg = msg.clone()
+            siblings = assertion_args_node.children
+            siblings.append(PyLeaf(token.STRING, ','))
+            siblings.append(msg)
 
 
 class FixAssert1ArgAopB(FixAssertBase):
