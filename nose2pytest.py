@@ -7,25 +7,45 @@ pytest without all the error-trapping code used by nose.
 The following article was very useful: http://python3porting.com/fixers.html#find-pattern.
 """
 
+import argparse
+import logging
+
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
 from lib2to3.pytree import Node as PyNode, Leaf as PyLeaf
 from lib2to3.pgen2 import token
 
-import argparse
-import logging
-from logging import StreamHandler
-import sys
-from textwrap import dedent
-
 
 log = logging.getLogger('nose2pytest')
+
+
+def override_required(func):
+    """Decorator used to document that the decorated function must be overridden in derived class."""
+    return func
+
+
+def override_optional(func):
+    """Decorator used to document that the decorated function can be overridden in derived class, but need not be."""
+    return func
+
+
+def override(BaseClass):
+    """Decorator used to document that the decorated function overrides the function of same name in BaseClass."""
+
+    def decorator(func):
+        return func
+
+    return decorator
+
+
+# FIXERS:
+
 grammar = pygram.python_grammar
 driver = pgen2.driver.Driver(grammar, convert=pytree.convert, logger=log)
 
 
-PATTERN_ONE_ARG_OR_KWARG = """power< 'func' trailer< '(' not(arglist) obj1=any                         ')' > >"""
-PATTERN_ONE_ARG = """power< 'func' trailer< '(' not(arglist | argument<any '=' any>) obj1=any ')' > >"""
-PATTERN_ONE_KWARG = """power< 'func' trailer< '(' obj1=argument< any '=' any >                  ')' > >"""
+PATTERN_ONE_ARG_OR_KWARG =   """power< 'func' trailer< '(' not(arglist) obj1=any                         ')' > >"""
+PATTERN_ONE_ARG =            """power< 'func' trailer< '(' not(arglist | argument<any '=' any>) obj1=any ')' > >"""
+PATTERN_ONE_KWARG =          """power< 'func' trailer< '(' obj1=argument< any '=' any >                  ')' > >"""
 PATTERN_TWO_ARGS_OR_KWARGS = """power< 'func' trailer< '(' arglist< obj1=any ',' obj2=any >              ')' > >"""
 
 PATTERN_1_OR_2_ARGS = """
@@ -43,141 +63,155 @@ PATTERN_2_OR_3_ARGS = """
     """
 
 
-def override_required(func):
-    """Decorator used to document that decorated function must be overridden in derived class."""
-    return func
-
-
-def override_optional(func):
-    """Decorator used to document that decorated function can be overridden in derived class, but need not be."""
-    return func
-
-
-def override(BaseClass):
-    """Decorator used to document that decorated function overrides the function of same name in BaseClass."""
-    def decorator(func):
-        return func
-    return decorator
-
-
-# FIXERS:
-
 class FixAssertBase(fixer_base.BaseFix):
     # BM_compatible = True
 
-    def __init__(self, nose_func_name: str, pytest_func: str, *args, **kwargs):
+    # Each derived class should define a dictionary where the key is the name of the nose function to convert,
+    # and the value is a pair where the first item is the assertion statement expression, and the second item
+    # is data that will be available in _transform_dest() override as self._conv_data.
+    conversions = None
+
+    @classmethod
+    def create_all(cls, options, log):
+        fixers = []
+        for nose_func in cls.conversions:
+            fixers.append(cls(nose_func, options, log))
+        return fixers
+
+    def __init__(self, nose_func_name: str, *args, **kwargs):
+        test_expr, conv_data = self.conversions[nose_func_name]
+        self.nose_func_name = nose_func_name
+        self._conv_data = conv_data
+
         self.PATTERN = self.PATTERN.format(nose_func_name)
-        log.info('%s will convert %s as "assert %s"', self.__class__.__name__, nose_func_name, pytest_func)
+        log.info('%s will convert %s as "assert %s"', self.__class__.__name__, nose_func_name, test_expr)
         super().__init__(*args, **kwargs)
 
-        self.dest_tree = driver.parse_string('assert ' + pytest_func + '\n')
+        self.dest_tree = driver.parse_string('assert ' + test_expr + '\n')
         # remove the \n we added
         del self.dest_tree.children[0].children[1]
 
+    @override(fixer_base.BaseFix)
     def transform(self, node: PyNode, results: {str: PyNode}) -> PyNode:
         assert results
         dest_tree = self.dest_tree.clone()
-        self._transform_dest(dest_tree, results)
+        assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
+        assert_args = assert_arg_test_node.parent
+        self._transform_dest(assert_arg_test_node, results)
+        self._handle_opt_msg(assert_args, results)
         dest_tree.prefix = node.prefix
         return dest_tree
 
     @override_required
-    def _transform_dest(self, node: PyNode, results: {str: PyNode}):
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
         pass
 
-    def _handle_opt_msg(self, siblings, results):
+    def _handle_opt_msg(self, assertion_args_node: PyNode, results: {str: PyNode}):
         if 'msg' in results:
             msg = results["msg"]
             msg = msg.clone()
+            siblings = assertion_args_node.children
             siblings.append(PyLeaf(token.STRING, ','))
             siblings.append(msg)
 
+    def _get_node(self, from_node, indices_path: int or [int]) -> PyLeaf or PyNode:
+        if indices_path is None:
+            return from_node
 
-class FixAssert1Arg(FixAssertBase):
+        try:
+            node = from_node
+            for index in indices_path:
+                node = node.children[index]
+            return node
+
+        except TypeError:
+            return from_node.children[indices_path]
+
+
+class FixAssert1ArgAopB(FixAssertBase):
+    """
+    Fixer class for any 1-argument assertion function (assert_func(a)). It supports optional 2nd arg for the
+    assertion message, ie assert_func(a, msg) -> assert a binop something, msg.
+    """
 
     PATTERN = PATTERN_1_OR_2_ARGS
 
+    # the conv data is a node children indices path from the PyNode that represents the assertion expression.
+    # Example: assert_false(a) becomes "assert not a", so the PyNode for assertion expression is 'not a', and
+    # the 'a' is its children[1] so self._conv_data needs to be 1.
     conversions = dict(
-        # assert_true='assert a',
-        # assert_false='assert not a',
-        assert_is_none='a is None',
-        assert_is_not_none='a is not None',
+        assert_true=('a', None),
+        assert_false=('not a', 1),
+        assert_is_none=('a is None', 0),
+        assert_is_not_none=('a is not None', 0),
     )
 
     @override(FixAssertBase)
-    def _transform_dest(self, dest_tree, results):
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
         test = results["test"]
         test = test.clone()
         test.prefix = " "
 
-        node = dest_tree.children[0].children[0].children[1]
-        node.children[0] = test
-        self._handle_opt_msg(node.children, results)
+        # the destination node for 'a' is in conv_data:
+        dest_node = self._get_node(assert_arg_test_node, self._conv_data)
+        dest_node.replace(test)
 
 
-class FixAssertTrue(FixAssertBase):
-    PATTERN = PATTERN_1_OR_2_ARGS
+class FixAssert2ArgsAopB(FixAssertBase):
+    """
+    Fixer class for any 2-argument assertion function (assert_func(a, b)). It supports optional third arg
+    as the assertion message, ie assert_func(a, b, msg) -> assert a binop b, msg.
 
-    def __init__(self, *args, **kwargs):
-        super().__init__('assert_true', 'a', *args, **kwargs)
-
-    def _transform_dest(self, dest_tree, results):
-        test = results["test"]
-        test = test.clone()
-        test.prefix = " "
-
-        node = dest_tree.children[0].children[0]
-        node.children[1] = test
-        self._handle_opt_msg(node.children, results)
-
-
-class FixAssertFalse(FixAssertBase):
-    PATTERN = PATTERN_1_OR_2_ARGS
-
-    def __init__(self, *args, **kwargs):
-        super().__init__('assert_false', 'not a', *args, **kwargs)
-
-    def _transform_dest(self, dest_tree, results):
-        test = results["test"]
-        test = test.clone()
-        test.prefix = " "
-
-        node = dest_tree.children[0].children[0].children[1]
-        node.children[1] = test
-        self._handle_opt_msg(node.children, results)
-
-
-class FixAssert2Args(FixAssertBase):
+    The class defines a conversions dict
+    """
 
     PATTERN = PATTERN_2_OR_3_ARGS
 
+    # The conversion data (2nd item of the value; see base class docs) is a pair of "node paths": the first
+    # node path is to "a", the second one is to "b", relative to the assertion expression.
+    #
+    # Example 1: assert_equal(a, b) will convert to "assert a == b" so the PyNode for assertion expression
+    # is 'a == b' and a is that node's children[0], whereas b is that node's children[2], so the self._conv_data
+    # is simply (0, 2).
+    #
+    # Example 2: assert_is_instance(a, b) converts to "assert isinstance(a, b)" so the conversion data is
+    # the pair of node paths (1, 1, 0) and (1, 1, 1) since from the PyNode for the assertion expression
+    # "isinstance(a, b)", 'a' is that node's children[1].children[1].children[0], whereas 'b' is
+    # that node's children[1].children[1].children[1].
     conversions = dict(
-        assert_equal='a == b',
-        assert_equals='a == b',
-        assert_not_equal='a != b',
-        assert_not_equals='a != b',
+        assert_equal=('a == b', (0, 2)),
+        assert_equals=('a == b', (0, 2)),
+        assert_not_equal=('a != b', (0, 2)),
+        assert_not_equals=('a != b', (0, 2)),
 
-        assert_list_equal='a == b',
-        assert_dict_equal='a == b',
-        assert_set_equal='a == b',
-        assert_sequence_equal='a == b',
-        assert_tuple_equal='a == b',
-        assert_multi_line_equal='a == b',
+        assert_list_equal=('a == b', (0, 2)),
+        assert_dict_equal=('a == b', (0, 2)),
+        assert_set_equal=('a == b', (0, 2)),
+        assert_sequence_equal=('a == b', (0, 2)),
+        assert_tuple_equal=('a == b', (0, 2)),
+        assert_multi_line_equal=('a == b', (0, 2)),
 
-        assert_greater='a > b',
-        assert_greater_equal='a >= b',
-        assert_less='a < b',
-        assert_less_equal='a <= b',
+        assert_greater=('a > b', (0, 2)),
+        assert_greater_equal=('a >= b', (0, 2)),
+        assert_less=('a < b', (0, 2)),
+        assert_less_equal=('a <= b', (0, 2)),
 
-        assert_in='a in b',
-        assert_not_in='a not in b',
+        assert_in=('a in b', (0, 2)),
+        assert_not_in=('a not in b', (0, 2)),
 
-        assert_is='a is b',
-        assert_is_not='a is not b',
+        assert_is=('a is b', (0, 2)),
+        assert_is_not=('a is not b', (0, 2)),
+
+        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 1))),
+        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1))),
+        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0))),
+        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0))),
+        assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
+        assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
     )
 
     @override(FixAssertBase)
-    def _transform_dest(self, dest_tree, results):
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
         lhs = results["lhs"]
         lhs = lhs.clone()
         lhs.prefix = " "
@@ -185,10 +219,10 @@ class FixAssert2Args(FixAssertBase):
         rhs = results["rhs"]
         rhs = rhs.clone()
 
-        node = dest_tree.children[0].children[0].children[1]
-        node.children[0] = lhs
-        node.children[2] = rhs
-        self._handle_opt_msg(node.children, results)
+        dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
+        dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
+        dest1.replace(lhs)
+        dest2.replace(rhs)
 
 
 # ------------ Main portion of script -------------------------------
@@ -200,45 +234,12 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
 
     def get_fixers(self):
         pre_fixers = []
+        post_fixers = []
 
-        for nose_func, pytest_func in FixAssert1Arg.conversions.items():
-            pre_fixers.append(FixAssert1Arg(nose_func, pytest_func, self.options, self.fixer_log))
-        for nose_func, pytest_func in FixAssert2Args.conversions.items():
-            pre_fixers.append(FixAssert2Args(nose_func, pytest_func, self.options, self.fixer_log))
+        pre_fixers.extend(FixAssert1ArgAopB.create_all(self.options, self.fixer_log))
+        pre_fixers.extend(FixAssert2ArgsAopB.create_all(self.options, self.fixer_log))
 
-        pre_fixers.append(FixAssertTrue(self.options, self.fixer_log))
-        pre_fixers.append(FixAssertFalse(self.options, self.fixer_log))
-
-        return pre_fixers, []
-
-
-def test():
-    test_script = dedent("""
-        log.print("hi")
-
-        assert_true(a)
-        assert_true(a, msg)
-        assert_false(a)
-        assert_false(a, msg='text')
-
-        assert_is_none(a)
-        assert_is_none(a, text)
-        assert_is_none(a, msg=text)
-
-        assert_in(a, b)
-        assert_in(a, b, text)
-        assert_in(a, b, msg='text')
-
-        """)
-
-    for key in FixAssert1Arg.conversions:
-        test_script += '{}(123)\n'.format(key)
-    for key in FixAssert2Args.conversions:
-        test_script += '{}(123, 456)\n'.format(key)
-    log.info(test_script)
-
-    result = refac.refactor_string(test_script, 'script')
-    log.info(result)
+        return pre_fixers, post_fixers
 
 
 def setup():
@@ -249,11 +250,6 @@ def setup():
     #         argspec = inspect.getargspec(getattr(nosetools, key))
     #         print(key, argspec)
 
-    redirect = StreamHandler(stream=sys.stdout)
-    redirect.setLevel(logging.DEBUG)
-    log.addHandler(redirect)
-    log.setLevel(logging.DEBUG)
-
     parser = argparse.ArgumentParser(description='Convert nose assertions to regular assertions for use by pytest')
     parser.add_argument('dir_name', type=str,
                         help='folder name from which to start; all .py files under it will be converted')
@@ -263,8 +259,8 @@ def setup():
     return parser.parse_args()
 
 
-args = setup()
-refac = NoseConversionRefactoringTool()
-# test()
-refac.refactor_dir(args.dir_name, write=args.write)
+if __name__ == '__main__':
+    args = setup()
+    refac = NoseConversionRefactoringTool()
+    refac.refactor_dir(args.dir_name, write=args.write)
 
