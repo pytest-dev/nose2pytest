@@ -123,6 +123,13 @@ def get_prev_sibling(node: PyNode) -> PyNode:
     return get_prev_sibling(node.parent)
 
 
+def adjust_prefix_first_arg(new_aaa, orig_prefix):
+    if get_prev_sibling(new_aaa).type != token.NAME:
+        new_aaa.prefix = ''
+    else:
+        new_aaa.prefix = orig_prefix or " "
+
+
 class FixAssertBase(fixer_base.BaseFix):
     # BM_compatible = True
 
@@ -322,10 +329,7 @@ class FixAssert2Args(FixAssertBase):
 
         new_lhs = group_if_non_leaf(lhs, maybe_needed)
         dest1.replace(new_lhs)
-        if new_lhs.parent.prev_sibling.type != token.NAME:
-            new_lhs.prefix = ''
-        else:
-            new_lhs.prefix = results["lhs"].prefix or " "
+        adjust_prefix_first_arg(new_lhs, results["lhs"].prefix)
 
         new_rhs = group_if_non_leaf(rhs, maybe_needed)
         dest2.replace(new_rhs)
@@ -357,16 +361,15 @@ class FixAssertAlmostEq(FixAssertBase):
         if not delta.children:
             return False
 
-        aaa = results["aaa"]
-        lhs_prefix = aaa.prefix
-        aaa = aaa.clone()
-        aaa.prefix = lhs_prefix + " "
-
+        aaa = results["aaa"].clone()
         bbb = results["bbb"].clone()
 
         dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
+        new_aaa = group_if_non_leaf(aaa)
+        dest1.replace(new_aaa)
+        adjust_prefix_first_arg(new_aaa, results["aaa"].prefix)
+
         dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
-        dest1.replace(group_if_non_leaf(aaa))
         dest2.replace(group_if_non_leaf(bbb))
 
         dest3 = self._get_node(assert_arg_test_node, self._conv_data[2])

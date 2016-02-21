@@ -140,24 +140,24 @@ class Test2Args:
             """)
 
     def test_same_results(self):
-        # check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
-        # check_fails(refac,  'assert_equal(123, 456)', 'assert 123 == 456')
-        # check_passes(refac, 'assert_equals(123, 123)', 'assert 123 == 123')
-        # check_fails(refac,  'assert_equals(123, 456)', 'assert 123 == 456')
-        #
-        # check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
-        # check_fails(refac,  'assert_not_equal(123, 123)', 'assert 123 != 123')
-        # check_passes(refac, 'assert_not_equals(123, 456)', 'assert 123 != 456')
-        # check_fails(refac,  'assert_not_equals(123, 123)', 'assert 123 != 123')
+        check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
+        check_fails(refac,  'assert_equal(123, 456)', 'assert 123 == 456')
+        check_passes(refac, 'assert_equals(123, 123)', 'assert 123 == 123')
+        check_fails(refac,  'assert_equals(123, 456)', 'assert 123 == 456')
 
-        # check_passes(refac, 'assert_list_equal([123, 456], [123, 456])', 'assert [123, 456] == [123, 456]')
-        # check_fails(refac,  'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
-        #
-        # check_passes(refac, 'assert_tuple_equal((123, 456), (123, 456))', 'assert (123, 456) == (123, 456)')
-        # check_fails(refac,  'assert_tuple_equal((123, 123), (123, 456))', 'assert (123, 123) == (123, 456)')
-        #
-        # check_passes(refac, 'assert_set_equal({123, 456}, {123, 456})', 'assert {123, 456} == {123, 456}')
-        # check_fails(refac,  'assert_set_equal({123, 123}, {123, 456})', 'assert {123, 123} == {123, 456}')
+        check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
+        check_fails(refac,  'assert_not_equal(123, 123)', 'assert 123 != 123')
+        check_passes(refac, 'assert_not_equals(123, 456)', 'assert 123 != 456')
+        check_fails(refac,  'assert_not_equals(123, 123)', 'assert 123 != 123')
+
+        check_passes(refac, 'assert_list_equal([123, 456], [123, 456])', 'assert [123, 456] == [123, 456]')
+        check_fails(refac,  'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
+
+        check_passes(refac, 'assert_tuple_equal((123, 456), (123, 456))', 'assert (123, 456) == (123, 456)')
+        check_fails(refac,  'assert_tuple_equal((123, 123), (123, 456))', 'assert (123, 123) == (123, 456)')
+
+        check_passes(refac, 'assert_set_equal({123, 456}, {123, 456})', 'assert {123, 456} == {123, 456}')
+        check_fails(refac,  'assert_set_equal({123, 123}, {123, 456})', 'assert {123, 123} == {123, 456}')
 
         check_passes(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=456))', 'assert dict(a=123, b=456) == dict(a=123, b=456)')
         check_fails(refac,  'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=123))', 'assert dict(a=123, b=456) == dict(a=123, b=123)')
@@ -212,27 +212,33 @@ class Test2Args:
 class Test3Args:
 
     def test_almost_equal(self):
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)')
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")')
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)')
-        check_fails(refac, 'assert_almost_equal(123.456, 124, delta=0.1)')
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)', 'assert abs(123.456 - 123.5) <= 0.1')
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")', 'assert abs(123.456 - 123.5) <= 0.2, "text"')
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)', 'assert abs(123.456 - 123.5) <= 0.3, "text"')
+        check_fails(refac, 'assert_almost_equal(123.456, 124, delta=0.1)', 'assert abs(123.456 - 124) <= 0.1')
 
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.1)')
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")')
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)')
-        check_fails(refac, 'assert_almost_equals(123.456, 124, delta=0.1)')
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.1)', 'assert abs(123.456 - 123.5) <= 0.1')
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")', 'assert abs(123.456 - 123.5) <= 0.2, "text"')
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)', 'assert abs(123.456 - 123.5) <= 0.3, "text"')
+        check_fails(refac, 'assert_almost_equals(123.456, 124, delta=0.1)', 'assert abs(123.456 - 124) <= 0.1')
 
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.01)')
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.02, msg="text")')
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, msg="text", delta=0.03)')
-        check_fails(refac,  'assert_not_almost_equal(123.456, 124, delta=0.6)')
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.01)', 'assert abs(123.456 - 123.5) > 0.01')
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.02, msg="text")', 'assert abs(123.456 - 123.5) > 0.02, "text"')
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, msg="text", delta=0.03)', 'assert abs(123.456 - 123.5) > 0.03, "text"')
+        check_fails(refac,  'assert_not_almost_equal(123.456, 124, delta=0.6)', 'assert abs(123.456 - 124) > 0.6')
 
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.01)')
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")')
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)')
-        check_fails(refac,  'assert_not_almost_equals(123.456, 124, delta=0.6)')
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.01)', 'assert abs(123.456 - 123.5) > 0.01')
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")', 'assert abs(123.456 - 123.5) > 0.02, "text"')
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)', 'assert abs(123.456 - 123.5) > 0.03, "text"')
+        check_fails(refac,  'assert_not_almost_equals(123.456, 124, delta=0.6)', 'assert abs(123.456 - 124) > 0.6')
 
-        # check_passes(refac, 'assert_almost_equal(123.456, 123.5, 2)')
-        # check_passes(refac, 'assert_almost_equal(123.456, 123.5, places=2)')
+    def test_ignore_places(self):
+        statement_in = 'assert_almost_equal(123.456, 123.5, 2)\n'
+        result = refac.refactor_string(statement_in, 'script')
+        assert str(result) == statement_in
+
+        statement_in = 'assert_almost_equal(123.456, 123.5, places=2)\n'
+        result = refac.refactor_string(statement_in, 'script')
+        assert str(result) == statement_in
 
 
