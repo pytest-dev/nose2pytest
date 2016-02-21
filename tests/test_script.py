@@ -4,12 +4,15 @@ import sys
 from textwrap import dedent
 import pytest
 
-from nose2pytest import FixAssert1ArgAopB, FixAssert2ArgsAopB, NoseConversionRefactoringTool
+from nose2pytest import FixAssert1Arg, FixAssert2Args, NoseConversionRefactoringTool
 
 
 log = logging.getLogger('nose2pytest')
 
 nosetools = {}
+pytesttools = {}
+
+refac = NoseConversionRefactoringTool()
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -20,10 +23,29 @@ def setup_log():
     log.setLevel(logging.DEBUG)
 
     import nose.tools
-    global nosetools
     for name, val in vars(nose.tools).items():
         if name.startswith('assert_'):
             nosetools[name] = val
+
+    import re, collections
+    pytesttools['re'] = re
+    pytesttools['collections'] = collections
+
+
+def check_passes(refac, statement_in, expect_out):
+    result = refac.refactor_string(statement_in + '\n', 'script')
+    statement_out = str(result)
+    exec(statement_in, nosetools)
+    exec(statement_out, pytesttools)
+    assert statement_out == expect_out + '\n'
+
+
+def check_fails(refac, statement_in, expect_out):
+    result = refac.refactor_string(statement_in + '\n', 'script')
+    statement_out = str(result)
+    pytest.raises(AssertionError, exec, statement_in, nosetools)
+    pytest.raises(AssertionError, exec, statement_out, pytesttools)
+    assert statement_out == expect_out + '\n'
 
 
 class Test1Arg:
@@ -33,69 +55,59 @@ class Test1Arg:
             log.print("hi")
 
             assert_true(a)
-            assert_true(a, msg)
+            assert_true(a, 'text')
             assert_true(a, msg='text')
             """)
 
-        refac = NoseConversionRefactoringTool()
         result = refac.refactor_string(test_script, 'script')
         assert str(result) == dedent("""
             log.print("hi")
 
             assert a
-            assert a, msg
-            assert a, msg='text'
+            assert a, 'text'
+            assert a, 'text'
             """)
 
-    def __check_passes(self, refac, statement_in):
-        result = refac.refactor_string(statement_in + '\n', 'script')
-        statement_out = str(result)
-        exec(statement_in, nosetools)
-        exec(statement_out)
+    def test_parens(self):
+        result = refac.refactor_string('assert_true(a + \nb)\n', 'script')
+        assert str(result) == 'assert (a + \nb)\n'
 
-    def __check_fails(self, refac, statement_in):
-        result = refac.refactor_string(statement_in + '\n', 'script')
-        statement_out = str(result)
-        pytest.raises(AssertionError, exec, statement_in, nosetools)
-        pytest.raises(AssertionError, exec, statement_out)
+    def test_same_results(self):
+        check_passes(refac, 'assert_true(True)', 'assert True')
+        check_fails(refac, 'assert_true(False)', 'assert False')
 
-    def test_true(self):
-        refac = NoseConversionRefactoringTool()
+        check_passes(refac, 'assert_false(False)', 'assert not False')
+        check_fails(refac, 'assert_false(True)', 'assert not True')
 
-        statement_in = 'assert_true(True)'
-        self.__check_passes(refac, statement_in)
+        check_passes(refac, 'assert_is_none(None)', 'assert None is None')
+        check_fails(refac, 'assert_is_none("")', 'assert "" is None')
 
-        statement_in = 'assert_true(False)'
-        self.__check_fails(refac, statement_in)
-
-    def test_false(self):
-        pass
-
-    def test_is_none(self):
-        pass
-
-    def test_is_not_none(self):
-        pass
+        check_passes(refac, 'assert_is_not_none("")', 'assert "" is not None')
+        check_fails(refac, 'assert_is_not_none(None)', 'assert None is not None')
 
 
 class Test2Args:
 
-    def test_2(self):
+    def test_params(self):
         test_script = dedent("""
             assert_in(a, b)
-            assert_in(a, b, text)
+            assert_in(a, b, 'text')
             assert_in(a, b, msg='text')
-            assert_in(a in c, b in c)
             """)
 
-        refac = NoseConversionRefactoringTool()
         result = refac.refactor_string(test_script, 'script')
         assert str(result) == dedent("""
             assert a in b
-            assert a in b, text
-            assert a in b, msg='text'
-            assert (a in c) in (b in c)
+            assert a in b, 'text'
+            assert a in b, 'text'
             """)
+
+    def test_parens(self):
+        result = refac.refactor_string('assert_in(a + b, c + d)\n', 'script')
+        assert str(result) == 'assert (a + b) in (c + d)\n'
+
+        result = refac.refactor_string('assert_in(a + b, c + d, "text")\n', 'script')
+        assert str(result) == 'assert (a + b) in (c + d), "text"\n'
 
     def test_newline(self):
         test_script = dedent("""
@@ -112,14 +124,13 @@ class Test2Args:
                       long_b + something)
             """)
 
-        refac = NoseConversionRefactoringTool()
         result = refac.refactor_string(test_script, 'script')
         assert str(result) == dedent("""
             assert (long_a in
                       long_b)
 
             assert (
-                 long_a in long_b)
+                long_a in long_b)
 
             assert a in (long_b +
                          something)
@@ -128,26 +139,100 @@ class Test2Args:
                       (long_b + something))
             """)
 
-    def test_binops(self):
-        redirect = StreamHandler(stream=sys.stdout)
-        redirect.setLevel(logging.DEBUG)
-        log.addHandler(redirect)
-        log.setLevel(logging.DEBUG)
+    def test_same_results(self):
+        # check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
+        # check_fails(refac,  'assert_equal(123, 456)', 'assert 123 == 456')
+        # check_passes(refac, 'assert_equals(123, 123)', 'assert 123 == 123')
+        # check_fails(refac,  'assert_equals(123, 456)', 'assert 123 == 456')
+        #
+        # check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
+        # check_fails(refac,  'assert_not_equal(123, 123)', 'assert 123 != 123')
+        # check_passes(refac, 'assert_not_equals(123, 456)', 'assert 123 != 456')
+        # check_fails(refac,  'assert_not_equals(123, 123)', 'assert 123 != 123')
 
-        test_script = dedent("""
-            assert_in(long_a,
-                      long_b)
-            """)
+        # check_passes(refac, 'assert_list_equal([123, 456], [123, 456])', 'assert [123, 456] == [123, 456]')
+        # check_fails(refac,  'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
+        #
+        # check_passes(refac, 'assert_tuple_equal((123, 456), (123, 456))', 'assert (123, 456) == (123, 456)')
+        # check_fails(refac,  'assert_tuple_equal((123, 123), (123, 456))', 'assert (123, 123) == (123, 456)')
+        #
+        # check_passes(refac, 'assert_set_equal({123, 456}, {123, 456})', 'assert {123, 456} == {123, 456}')
+        # check_fails(refac,  'assert_set_equal({123, 123}, {123, 456})', 'assert {123, 123} == {123, 456}')
 
-        for key in FixAssert1ArgAopB.conversions:
-            test_script += '{}(123)\n'.format(key)
-        for key in FixAssert2ArgsAopB.conversions:
-            test_script += '{}(123, 456)\n'.format(key)
-        log.info(test_script)
+        check_passes(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=456))', 'assert dict(a=123, b=456) == dict(a=123, b=456)')
+        check_fails(refac,  'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=123))', 'assert dict(a=123, b=456) == dict(a=123, b=123)')
+        check_fails(refac,  'assert_dict_equal(dict(a=123, b=456), dict(a=123, c=456))', 'assert dict(a=123, b=456) == dict(a=123, c=456)')
 
-        refac = NoseConversionRefactoringTool()
-        result = refac.refactor_string(test_script, 'script')
-        side_by_side = (('{} -> {}'.format(a, b) if a else '')
-                        for a, b in zip(test_script.split('\n'), str(result).split('\n')))
-        log.info('\n'.join(side_by_side))
+        check_passes(refac, 'assert_multi_line_equal("""1\n2\n""", """1\n2\n""")', 'assert """1\n2\n""" == """1\n2\n"""')
+        check_fails(refac,  'assert_multi_line_equal("""1\n2\n""", """1\n3\n""")', 'assert """1\n2\n""" == """1\n3\n"""')
+
+        check_passes(refac, 'assert_greater(123, 1)',   'assert 123 > 1'  )
+        check_fails(refac,  'assert_greater(123, 123)', 'assert 123 > 123')
+        check_fails(refac,  'assert_greater(123, 456)', 'assert 123 > 456')
+
+        check_passes(refac, 'assert_greater_equal(123, 1)',   'assert 123 >= 1'  )
+        check_passes(refac, 'assert_greater_equal(123, 123)', 'assert 123 >= 123')
+        check_fails(refac,  'assert_greater_equal(123, 456)', 'assert 123 >= 456')
+
+        check_passes(refac, 'assert_less(123, 456)', 'assert 123 < 456')
+        check_fails(refac,  'assert_less(123, 123)', 'assert 123 < 123')
+        check_fails(refac,  'assert_less(123, 1)',   'assert 123 < 1'  )
+
+        check_passes(refac, 'assert_less_equal(123, 456)', 'assert 123 <= 456')
+        check_passes(refac, 'assert_less_equal(123, 123)', 'assert 123 <= 123')
+        check_fails(refac,  'assert_less_equal(123, 1)'  , 'assert 123 <= 1'  )
+
+        check_passes(refac, 'assert_in(123, [123, 456])', 'assert 123 in [123, 456]')
+        check_fails(refac,  'assert_in(123, [789, 456])', 'assert 123 in [789, 456]')
+
+        check_passes(refac, 'assert_not_in(123, [789, 456])', 'assert 123 not in [789, 456]')
+        check_fails(refac,  'assert_not_in(123, [123, 456])', 'assert 123 not in [123, 456]')
+
+        check_passes(refac, 'assert_is(123, 123)', 'assert 123 is 123')
+        check_fails(refac,  'assert_is(123, 1)', 'assert 123 is 1')
+
+        check_passes(refac, 'assert_is_not(123, 1)', 'assert 123 is not 1')
+        check_fails(refac,  'assert_is_not(123, 123)', 'assert 123 is not 123')
+
+        check_passes(refac, 'assert_is_instance(123, int)', 'assert isinstance(123, int)')
+        check_fails(refac,  'assert_is_instance(123, float)', 'assert isinstance(123, float)')
+
+        check_passes(refac, 'assert_count_equal([456, 789, 456], [456, 456, 789])',
+                     'assert collections.Counter([456, 789, 456]) == collections.Counter([456, 456, 789])')
+        check_fails(refac,  'assert_count_equal([789, 456], [456])',
+                    'assert collections.Counter([789, 456]) == collections.Counter([456])')
+
+        check_passes(refac, 'assert_regex("125634", "12.*34")', 'assert re.search("12.*34","125634")')
+        check_fails(refac,  'assert_regex("125678", "12.*34")', 'assert re.search("12.*34","125678")')
+
+        check_passes(refac, 'assert_not_regex("125678", "12.*34")', 'assert not re.search("12.*34","125678")')
+        check_fails(refac,  'assert_not_regex("125634", "12.*34")', 'assert not re.search("12.*34","125634")')
+
+
+class Test3Args:
+
+    def test_almost_equal(self):
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)')
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")')
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)')
+        check_fails(refac, 'assert_almost_equal(123.456, 124, delta=0.1)')
+
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.1)')
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")')
+        check_passes(refac, 'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)')
+        check_fails(refac, 'assert_almost_equals(123.456, 124, delta=0.1)')
+
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.01)')
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.02, msg="text")')
+        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, msg="text", delta=0.03)')
+        check_fails(refac,  'assert_not_almost_equal(123.456, 124, delta=0.6)')
+
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.01)')
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")')
+        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)')
+        check_fails(refac,  'assert_not_almost_equals(123.456, 124, delta=0.6)')
+
+        # check_passes(refac, 'assert_almost_equal(123.456, 123.5, 2)')
+        # check_passes(refac, 'assert_almost_equal(123.456, 123.5, places=2)')
+
 

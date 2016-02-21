@@ -63,6 +63,12 @@ PATTERN_2_OR_3_ARGS = """
     ')' > >
     """
 
+PATTERN_ALMOST_ARGS = """
+    power< '{}' trailer< '('
+        ( arglist< aaa=any ',' bbb=any ',' delta=any >
+        | arglist< aaa=any ',' bbb=any ',' delta=any ',' msg=any > )
+    ')' > >
+    """
 
 # for the following node types, contains_newline() will return False even if newlines are between ()[]{}
 NEWLINE_OK_TOKENS = (token.LPAR, token.LSQB, token.LBRACE)
@@ -83,6 +89,38 @@ def contains_newline(node: PyNode) -> bool:
             return True
 
     return False
+
+
+def group_if_non_leaf(node: PyNode or PyLeaf, check: bool=True) -> PyNode or PyLeaf:
+    """
+    If the conversion data indicates that a, b should be grouped (wrapped by parentheses), then
+    return node if node is a leaf, and return parenthesized node otherwise.
+    :param node: the node to parenthesize
+    :return: the node for the parenthesized expression, or the node itself
+    """
+    if check and isinstance(node, PyNode):
+        first_child = node.children[0]
+        if first_child.type in NEWLINE_OK_TOKENS:
+            return node
+        if first_child.type == token.NAME:
+            sibling = first_child.next_sibling
+            if sibling is not None and isinstance(sibling, PyNode) and sibling.children[0].type in NEWLINE_OK_TOKENS:
+                return node
+
+        new_node = parenthesize(node)
+        new_node.prefix = node.prefix
+        node.prefix = ''
+        return new_node
+
+    return node
+
+
+def get_prev_sibling(node: PyNode) -> PyNode:
+    if node is None:
+        return None  # could not find
+    if node.prev_sibling is not None:
+        return node.prev_sibling
+    return get_prev_sibling(node.parent)
 
 
 class FixAssertBase(fixer_base.BaseFix):
@@ -124,23 +162,26 @@ class FixAssertBase(fixer_base.BaseFix):
         dest_tree = self.dest_tree.clone()
         assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
         assert_args = assert_arg_test_node.parent
-        self._transform_dest(assert_arg_test_node, results)
 
-        assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
-        if contains_newline(assert_arg_test_node):
-            prefixes = assert_arg_test_node.prefix.split('\n', 1)
-            assert_arg_test_node.prefix = '\n'+prefixes[1] if len(prefixes) > 1 else ''
-            new_node = parenthesize(assert_arg_test_node.clone())
-            new_node.prefix = prefixes[0] or ' '
-            assert_arg_test_node.replace(new_node)
+        if self._transform_dest(assert_arg_test_node, results):
+            assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
+            if contains_newline(assert_arg_test_node):
+                prefixes = assert_arg_test_node.prefix.split('\n', 1)
+                assert_arg_test_node.prefix = '\n'+prefixes[1] if len(prefixes) > 1 else ''
+                new_node = parenthesize(assert_arg_test_node.clone())
+                new_node.prefix = prefixes[0] or ' '
+                assert_arg_test_node.replace(new_node)
 
-        self.__handle_opt_msg(assert_args, results)
+            self.__handle_opt_msg(assert_args, results)
 
-        dest_tree.prefix = node.prefix
-        return dest_tree
+            dest_tree.prefix = node.prefix
+            return dest_tree
+
+        else:
+            return node
 
     @override_required
-    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
         """
         Transform the given node to use the results.
         :param assert_arg_test_node: the destination node representing the assertion test argument
@@ -178,13 +219,16 @@ class FixAssertBase(fixer_base.BaseFix):
         """
         if 'msg' in results:
             msg = results["msg"]
+            if msg.children:
+                msg = msg.children[2]
             msg = msg.clone()
+            msg.prefix = ' '
             siblings = assertion_args_node.children
             siblings.append(PyLeaf(token.COMMA, ','))
             siblings.append(msg)
 
 
-class FixAssert1ArgAopB(FixAssertBase):
+class FixAssert1Arg(FixAssertBase):
     """
     Fixer class for any 1-argument assertion function (assert_func(a)). It supports optional 2nd arg for the
     assertion message, ie assert_func(a, msg) -> assert a binop something, msg.
@@ -203,7 +247,7 @@ class FixAssert1ArgAopB(FixAssertBase):
     )
 
     @override(FixAssertBase)
-    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
         test = results["test"]
         test = test.clone()
         test.prefix = " "
@@ -212,13 +256,13 @@ class FixAssert1ArgAopB(FixAssertBase):
         dest_node = self._get_node(assert_arg_test_node, self._conv_data)
         dest_node.replace(test)
 
+        return True
 
-class FixAssert2ArgsAopB(FixAssertBase):
+
+class FixAssert2Args(FixAssertBase):
     """
     Fixer class for any 2-argument assertion function (assert_func(a, b)). It supports optional third arg
     as the assertion message, ie assert_func(a, b, msg) -> assert a binop b, msg.
-
-    The class defines a conversions dict
     """
 
     PATTERN = PATTERN_2_OR_3_ARGS
@@ -258,20 +302,15 @@ class FixAssert2ArgsAopB(FixAssertBase):
         assert_is=('a is b', (0, 2)),
         assert_is_not=('a is not b', (0, 2)),
 
-        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 1), False)),
+        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 2), False)),
         assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1), False)),
         assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0), False)),
         assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0), False)),
-        assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
-        assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2))),
     )
 
     @override(FixAssertBase)
-    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}):
-        lhs = results["lhs"]
-        lhs_prefix = lhs.prefix
-        lhs = lhs.clone()
-        lhs.prefix = lhs_prefix + " "
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
+        lhs = results["lhs"].clone()
 
         rhs = results["rhs"]
         rhs = rhs.clone()
@@ -279,24 +318,73 @@ class FixAssert2ArgsAopB(FixAssertBase):
         dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
         dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
 
-        dest1.replace(self.__group_if_non_leaf(lhs))
-        dest2.replace(self.__group_if_non_leaf(rhs))
-
-    def __group_if_non_leaf(self, node: PyNode or PyLeaf) -> PyNode or PyLeaf:
-        """
-        If the conversion data indicates that a, b should be grouped (wrapped by parentheses), then
-        return node if node is a leaf, and return parenthesized node otherwise.
-        :param node: the node to parenthesize
-        :return: the node for the parenthesized expression, or the node itself
-        """
         maybe_needed = len(self._conv_data) <= 2 or self._conv_data[2]
-        if maybe_needed and isinstance(node, PyNode):
-            new_node = parenthesize(node)
-            new_node.prefix = node.prefix
-            node.prefix = ''
-            return new_node
 
-        return node
+        new_lhs = group_if_non_leaf(lhs, maybe_needed)
+        dest1.replace(new_lhs)
+        if new_lhs.parent.prev_sibling.type != token.NAME:
+            new_lhs.prefix = ''
+        else:
+            new_lhs.prefix = results["lhs"].prefix or " "
+
+        new_rhs = group_if_non_leaf(rhs, maybe_needed)
+        dest2.replace(new_rhs)
+        if get_prev_sibling(new_rhs).type in NEWLINE_OK_TOKENS:
+            new_rhs.prefix = ''
+
+        return True
+
+
+class FixAssertAlmostEq(FixAssertBase):
+    """
+    Fixer class for any 3-argument assertion function (assert_func(a, b, c)). It supports optional fourth arg
+    as the assertion message, ie assert_func(a, b, c, msg) -> assert a op b op c, msg.
+    """
+
+    PATTERN = PATTERN_ALMOST_ARGS
+
+    # See FixAssert2Args for an explanation of the conversion data
+    conversions = dict(
+            assert_almost_equal=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+            assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+            assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+            assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+    )
+
+    @override(FixAssertBase)
+    def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
+        delta = results["delta"].clone()
+        if not delta.children:
+            return False
+
+        aaa = results["aaa"]
+        lhs_prefix = aaa.prefix
+        aaa = aaa.clone()
+        aaa.prefix = lhs_prefix + " "
+
+        bbb = results["bbb"].clone()
+
+        dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
+        dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
+        dest1.replace(group_if_non_leaf(aaa))
+        dest2.replace(group_if_non_leaf(bbb))
+
+        dest3 = self._get_node(assert_arg_test_node, self._conv_data[2])
+        if delta.children[0] == PyLeaf(token.NAME, 'delta'):
+            delta_val = delta.children[2]
+            delta_val.prefix = " "
+            dest3.replace(group_if_non_leaf(delta_val))
+
+        elif delta.children[0] == PyLeaf(token.NAME, 'msg'):
+            delta_val = results['msg'].children[2]
+            delta_val.prefix = " "
+            dest3.replace(group_if_non_leaf(delta_val))
+            results['msg'] = delta
+
+        else:
+            return False
+
+        return True
 
 
 # ------------ Main portion of script -------------------------------
@@ -310,8 +398,9 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
         pre_fixers = []
         post_fixers = []
 
-        pre_fixers.extend(FixAssert1ArgAopB.create_all(self.options, self.fixer_log))
-        pre_fixers.extend(FixAssert2ArgsAopB.create_all(self.options, self.fixer_log))
+        pre_fixers.extend(FixAssert1Arg.create_all(self.options, self.fixer_log))
+        pre_fixers.extend(FixAssert2Args.create_all(self.options, self.fixer_log))
+        pre_fixers.extend(FixAssertAlmostEq.create_all(self.options, self.fixer_log))
 
         return pre_fixers, post_fixers
 
