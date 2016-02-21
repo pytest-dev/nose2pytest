@@ -31,20 +31,17 @@ The script has so far only been tested with Python 3.4, on Windows 7 Pro 64.
 Note that not every `nose.tools.assert_*` function can be converted by nose2pytest because some functions don't 
 have a straightforward assertion statement equivalent. The missing ones can be grouped into several categories: 
 
-1. Those that can be handled via a global search-replace, so a fixer was overkill: 
+1. Those that can be handled via a global search-replace, so a fixer was more work than it was worth: 
     - `assert_raises`: replace with `pytest.raises`
     - `assert_warns`: replace with `pytest.warns`
-2. Those than could easily be handled with additional fixers, but not done yet:
-    - `assert_almost_equals` and `assert_almost_equal(a, b, delta) -> abs(a - b) <= delta`
-    - `assert_not_almost_equal` and `assert_not_almost_equals(a, b, delta) -> abs(a-b) > delta`
-3. Those that could be handled via fixers but the readability might be decreased, so it would likely be
+2. Those that could be handled via fixers but the readability might be decreased, so it would likely be
    better to stick with utility functions, perhaps provided via a py.test plugin: 
-    - `assert_almost_equals` and `assert_almost_equal(a, b, places) -> round(abs(b-a), places) == 0`
-    - `assert_almost_equals` and `assert_almost_equal(a, b) -> round(abs(b-a), 7) == 0`
-    - `assert_not_almost_equal` and `assert_not_almost_equals(a, b, places) -> round(abs(b-a), places) != 0`
-    - `assert_not_almost_equal` and `assert_not_almost_equals(a, b) -> round(abs(b-a), 7) != 0`
+    - `assert_almost_equal(a, b, places) -> round(abs(b-a), places) == 0`
+    - `assert_almost_equal(a, b) -> round(abs(b-a), 7) == 0`
+    - `assert_not_almost_equal(a, b, places) -> round(abs(b-a), places) != 0`
+    - `assert_not_almost_equal(a, b) -> round(abs(b-a), 7) != 0`
     - `assert_dict_contains_subset(a,b) -> assert set(b.keys()) >= a.keys() and {k: b[k] for k in a if k in b} == a`
-4. Those that propably could not be handled via a rewrite, i.e. they would likely have to be utility functions:
+3. Those that propably could not be handled via a rewrite, i.e. they would likely have to be utility functions:
     - `assert_logs`
     - `assert_raises_regex`
     - `assert_raises_regexp`  # deprecated
