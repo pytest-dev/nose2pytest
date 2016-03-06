@@ -102,42 +102,130 @@ class Test2Args:
             assert a in b, 'text'
             """)
 
-    def test_parens(self):
+    def test_dont_add_parens(self):
+        result = refac.refactor_string('assert_in(a, c)\n', 'script')
+        assert str(result) == 'assert a in c\n'
+
+        result = refac.refactor_string('assert_in(a.b, c)\n', 'script')
+        assert str(result) == 'assert a.b in c\n'
+
+        result = refac.refactor_string('assert_in(a.b(), c)\n', 'script')
+        assert str(result) == 'assert a.b() in c\n'
+
+        result = refac.refactor_string('assert_in(a(), d)\n', 'script')
+        assert str(result) == 'assert a() in d\n'
+
+        result = refac.refactor_string('assert_in(a[1], d)\n', 'script')
+        assert str(result) == 'assert a[1] in d\n'
+
+        result = refac.refactor_string('assert_in((a+b), d)\n', 'script')
+        assert str(result) == 'assert (a+b) in d\n'
+
+        result = refac.refactor_string('assert_in((a+b), d)\n', 'script')
+        assert str(result) == 'assert (a+b) in d\n'
+
+        result = refac.refactor_string('assert_in(-a, +b)\n', 'script')
+        assert str(result) == 'assert -a in +b\n'
+
+    def test_add_parens(self):
+        result = refac.refactor_string('assert_in(a == b, d)\n', 'script')
+        assert str(result) == 'assert (a == b) in d\n'
+
+        result = refac.refactor_string('assert_in(a != b, d)\n', 'script')
+        assert str(result) == 'assert (a != b) in d\n'
+
+        result = refac.refactor_string('assert_in(b <= c, d)\n', 'script')
+        assert str(result) == 'assert (b <= c) in d\n'
+
+        result = refac.refactor_string('assert_in(c >= d, d)\n', 'script')
+        assert str(result) == 'assert (c >= d) in d\n'
+
+        result = refac.refactor_string('assert_in(d < e, d)\n', 'script')
+        assert str(result) == 'assert (d < e) in d\n'
+
+        result = refac.refactor_string('assert_in(d > e, d)\n', 'script')
+        assert str(result) == 'assert (d > e) in d\n'
+
+        result = refac.refactor_string('assert_equal(a in b, c)\n', 'script')
+        assert str(result) == 'assert (a in b) == c\n'
+
+        result = refac.refactor_string('assert_equal(a not in b, c)\n', 'script')
+        assert str(result) == 'assert (a not in b) == c\n'
+
+        result = refac.refactor_string('assert_equal(a is b, c)\n', 'script')
+        assert str(result) == 'assert (a is b) == c\n'
+
+        result = refac.refactor_string('assert_equal(a is not b, c)\n', 'script')
+        assert str(result) == 'assert (a is not b) == c\n'
+
+        result = refac.refactor_string('assert_equal(not a, c)\n', 'script')
+        assert str(result) == 'assert (not a) == c\n'
+
+        result = refac.refactor_string('assert_equal(a and b, c or d)\n', 'script')
+        assert str(result) == 'assert (a and b) == (c or d)\n'
+
+        result = refac.refactor_string('assert_in(a.b + c, d)\n', 'script')
+        assert str(result) == 'assert a.b + c in d\n'
+
+        result = refac.refactor_string('assert_in(a() + b, d)\n', 'script')
+        assert str(result) == 'assert a() + b in d\n'
+
         result = refac.refactor_string('assert_in(a + b, c + d)\n', 'script')
-        assert str(result) == 'assert (a + b) in (c + d)\n'
+        assert str(result) == 'assert a + b in c + d\n'
 
         result = refac.refactor_string('assert_in(a + b, c + d, "text")\n', 'script')
-        assert str(result) == 'assert (a + b) in (c + d), "text"\n'
+        assert str(result) == 'assert a + b in c + d, "text"\n'
 
-    def test_newline(self):
+    def test_newline_all(self):
         test_script = dedent("""
             assert_in(long_a,
                       long_b)
-
-            assert_in(
-                long_a, long_b)
-
-            assert_in(a, long_b +
-                         something)
-
-            assert_in(long_a,
-                      long_b + something)
-            """)
-
+        """)
         result = refac.refactor_string(test_script, 'script')
         assert str(result) == dedent("""
             assert (long_a in
                       long_b)
+        """)
 
+        test_script = dedent("""
+            assert_in(
+                long_a, long_b)
+        """)
+        result = refac.refactor_string(test_script, 'script')
+        assert str(result) == dedent("""
             assert (
                 long_a in long_b)
+        """)
 
-            assert a in (long_b +
-                         something)
-
+        test_script = dedent("""
+            assert_in(long_a,
+                      long_b + something)
+        """)
+        result = refac.refactor_string(test_script, 'script')
+        assert str(result) == dedent("""
             assert (long_a in
-                      (long_b + something))
-            """)
+                      long_b + something)
+        """)
+
+        test_script = dedent("""
+            assert_in(long_a,
+                      long_b > something)
+        """)
+        result = refac.refactor_string(test_script, 'script')
+        assert str(result) == dedent("""
+            assert (long_a in
+                      (long_b > something))
+        """)
+
+        test_script = dedent("""
+            assert_in(a, long_b +
+                         something)
+        """)
+        result = refac.refactor_string(test_script, 'script')
+        assert str(result) == dedent("""
+            assert (a in long_b +
+                         something)
+        """)
 
     def test_same_results(self):
         check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
@@ -215,7 +303,7 @@ class Test3Args:
         check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)', 'assert abs(123.456 - 123.5) <= 0.1')
         check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")', 'assert abs(123.456 - 123.5) <= 0.2, "text"')
         check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)', 'assert abs(123.456 - 123.5) <= 0.3, "text"')
-        check_fails(refac, 'assert_almost_equal(123.456, 124, delta=0.1)', 'assert abs(123.456 - 124) <= 0.1')
+        check_fails(refac,  'assert_almost_equal(123.456, 124, delta=0.1)', 'assert abs(123.456 - 124) <= 0.1')
 
         check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.1)', 'assert abs(123.456 - 123.5) <= 0.1')
         check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")', 'assert abs(123.456 - 123.5) <= 0.2, "text"')
