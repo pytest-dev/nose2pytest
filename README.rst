@@ -1,4 +1,3 @@
-# nose2pytest
 
 Overview
 ------------
@@ -82,7 +81,6 @@ Not every ``nose.tools.assert_*`` function is converted by nose2pytest:
     
 3. Some Nose functions don't have a one-line assert statement equivalent, they have to remain utility functions:
 
-    - ``assert_logs``
     - ``assert_raises_regex``
     - ``assert_raises_regexp``  # deprecated by Nose
     - ``assert_regexp_matches`` # deprecated by Nose

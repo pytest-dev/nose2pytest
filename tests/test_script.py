@@ -4,7 +4,8 @@ import sys
 from textwrap import dedent
 import pytest
 
-from nose2pytest import FixAssert1Arg, FixAssert2Args, NoseConversionRefactoringTool
+from nose2pytest import NoseConversionRefactoringTool
+from assert_tools import *
 
 
 log = logging.getLogger('nose2pytest')
@@ -312,3 +313,36 @@ class Test3Args:
         check_transformation(statement_in, statement_in)
 
 
+class TestAssertTools:
+
+    def test_almost(self):
+        assert_almost_equal(1, 1.00001, 4)
+        assert_not_almost_equal(1, 1.01, 3)
+        pytest.raises(AssertionError, assert_almost_equal, 1, 1.01, 5)
+        pytest.raises(AssertionError, assert_not_almost_equal, 1, 1.00001, 2)
+        # assert_almost_equal(1, 1.01, 5)
+        # assert_not_almost_equal(1, 1.00001, 2)
+
+    def test_dict_keys_subset(self):
+        dict1 = dict(a=1, b=2, c=3)
+
+        # check keys are subset:
+        dict2 = dict1.copy()
+        assert_dict_contains_subset(dict1, dict2)
+
+        dict2['d'] = 4
+        assert_dict_contains_subset(dict1, dict2)
+
+        del dict2['a']
+        pytest.raises(AssertionError, assert_dict_contains_subset, dict1, dict2)
+        # assert_dict_contains_subset(dict1, dict2)
+
+    def test_dict_values_subset(self):
+        dict1 = dict(a=1, b=2, c=3)
+
+        # check keys are subset:
+        dict2 = dict1.copy()
+        dict2['d'] = 4
+        dict2['a'] = 4
+        pytest.raises(AssertionError, assert_dict_contains_subset, dict1, dict2)
+        # assert_dict_contains_subset(dict1, dict2)

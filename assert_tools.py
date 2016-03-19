@@ -1,0 +1,116 @@
+# Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see __license__ at bottom of this file for details).
+"""
+This module's assert_ functions can be imported in a test suite run by py.test. They are drop-in replacements
+for the nose.tools.assert_ functions but rely on py.test's assertion introspection for error reporting.
+"""
+
+import unittest
+
+
+__all__ = [
+    'assert_almost_equal',
+    'assert_not_almost_equal',
+    'assert_dict_contains_subset',
+
+    'assert_raises_regex',
+    'assert_raises_regexp',
+    'assert_regexp_matches',
+    'assert_warns_regex',
+]
+
+
+def assert_almost_equal(a, b, places=7, msg=None):
+    """
+    Fail if the two objects are unequal as determined by their
+    difference rounded to the given number of decimal places
+    and comparing to zero.
+
+    Note that decimal places (from zero) are usually not the same
+    as significant digits (measured from the most signficant digit).
+
+    See the builtin round() function for places parameter.
+    """
+    if msg is None:
+        assert round(abs(b - a), places) == 0
+    else:
+        assert round(abs(b - a), places) == 0, msg
+
+
+def assert_not_almost_equal(a, b, places=7, msg=None):
+    """
+    Fail if the two objects are equal as determined by their
+    difference rounded to the given number of decimal places
+    and comparing to zero.
+
+    Note that decimal places (from zero) are usually not the same
+    as significant digits (measured from the most signficant digit).
+
+    See the builtin round() function for places parameter.
+    """
+    if msg is None:
+        assert round(abs(b - a), places) != 0
+    else:
+        assert round(abs(b - a), places) != 0, msg
+
+
+def assert_dict_contains_subset(subset, dictionary, msg=None):
+    """
+    Checks whether dictionary is a superset of subset. If not, the assertion message will have useful details,
+    unless msg is given, then msg is output.
+    """
+    dictionary = dictionary
+    missing_keys = sorted(list(set(subset.keys()) - set(dictionary.keys())))
+    mismatch_vals = {k: (subset[k], dictionary[k]) for k in subset if k in dictionary and subset[k] != dictionary[k]}
+    if msg is None:
+        assert missing_keys == [], 'Missing keys = {}'.format(missing_keys)
+        assert mismatch_vals == {}, 'Mismatched values (s, d) = {}'.format(mismatch_vals)
+    else:
+        assert missing_keys == [], msg
+        assert mismatch_vals == {}, msg
+
+
+# Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
+
+class _Dummy(unittest.TestCase):
+    def nop():
+        pass
+
+_t = _Dummy('nop')
+
+assert_raises_regex = _t.assertRaisesRegex
+assert_raises_regexp = _t.assertRaisesRegexp
+assert_regexp_matches = _t.assertRegexpMatches
+assert_warns_regex = _t.assertWarnsRegex
+
+del _Dummy
+del _t
+
+__license__ = """
+    Copyright (c) 2016, Oliver Schoenborn
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, this
+      list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+    * Neither the name of pytest_from_nose nor the names of its
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
