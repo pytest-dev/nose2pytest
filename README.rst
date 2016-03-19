@@ -63,31 +63,35 @@ Not every ``nose.tools.assert_*`` function is converted by nose2pytest:
 
 1. Some Nose functions can be handled via a global search-replace, so a fixer was not a necessity: 
 
-    - ``assert_raises``: replace with ``pytest.raises``
-    - ``assert_warns``: replace with ``pytest.warns``
+   - ``assert_raises``: replace with ``pytest.raises``
+   - ``assert_warns``: replace with ``pytest.warns``
      
 2. Some Nose functions could be transformed but the readability would be decreased: 
    
-    - ``assert_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) == 0``
-    - ``assert_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) == 0``
-    - ``assert_not_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) != 0``
-    - ``assert_not_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) != 0``
-    - ``assert_dict_contains_subset(a,b)`` -> ``assert set(b.keys()) >= a.keys() and {k: b[k] for k in a if k in b} == a``
+   - ``assert_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) == 0``
+   - ``assert_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) == 0``
+   - ``assert_not_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) != 0``
+   - ``assert_not_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) != 0``
+   - ``assert_dict_contains_subset(a,b)`` -> ``assert set(b.keys()) >= a.keys() and {k: b[k] for k in a if k in b} == a``
     
-    Nose2pytest distribution contains a module, ``assert_tools.py`` which defines these utility functions to simply 
-    contain the equivalent raw assert statement. Copy the module into your test folder or into the pytest package 
-    and change your test code's ``from nose.tools import ...`` statements accordingly. You will still get the 
-    py.test introspection
+   The nose2pytest distribution contains a module, ``assert_tools.py`` which defines these utility functions to 
+   contain the equivalent raw assert statement. Copy the module into your test folder or into the pytest package 
+   and change your test code's ``from nose.tools import ...`` statements accordingly. Py.test introspection will 
+   provide error information on assertion failure.
     
 3. Some Nose functions don't have a one-line assert statement equivalent, they have to remain utility functions:
 
-    - ``assert_raises_regex``
-    - ``assert_raises_regexp``  # deprecated by Nose
-    - ``assert_regexp_matches`` # deprecated by Nose
-    - ``assert_warns_regex``
+   - ``assert_raises_regex``
+   - ``assert_raises_regexp``  # deprecated by Nose
+   - ``assert_regexp_matches`` # deprecated by Nose
+   - ``assert_warns_regex``
+   
+   These functions are available in ``assert_tools.py`` of nose2pytest distribution, and are imported as 
+   is from ``unittest.TestCase`` (but renamed as per Nose). Copy the module into your test folder or into 
+   the pytest package and change your test code's ``from nose.tools import ...`` statements accordingly. 
     
-4. Some Nose functions simply weren't on my radar; for example I just noticed there is a ``nose.tools.ok_()`` 
-   function which is the same as ``assert_equal``, I had never noticed it before. Feel free to contribute via email
+4. Some Nose functions simply weren't on my radar; for example I just noticed for the first time that there 
+   is a ``nose.tools.ok_()`` function which is the same as ``assert_equal``. Feel free to contribute via email
    or pull requests. 
 
 There are other limitations: 
@@ -138,17 +142,17 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
 - Multi-line arguments: Python accepts multi-line expressions when they are surrounded by parentheses, brackets 
   or braces, but not otherwise. For example converting ::
 
-      assert_func(long_a +
+     assert_func(long_a +
                   long_b, msg)
 
   to ::
 
-      assert long_a +
+     assert long_a +
                 long_b, msg
     
   yields invalid Python code. However, converting to the following yields valid Python code::
 
-      assert (long_a +
+     assert (long_a +
                 long_b), msg
 
   So nose2pytest checks each argument expression (such as ``long_a +\n long_b``) to see if it has 
@@ -162,16 +166,16 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
 
   should convert to ::
 
-      assert (long_a +
+     assert (long_a +
                 long_b), msg
-      assert z + (long_a +
+     assert z + (long_a +
                       long_b), msg)
     
   rather than ::
 
-      assert ((long_a +
+     assert ((long_a +
                 long_b)), msg
-      assert (z + (long_a +
+     assert (z + (long_a +
                       long_b)), msg)
 
   So nose2pytest only tries to limit the addition of external parentheses to code that really needs it. 
