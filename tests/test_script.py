@@ -32,6 +32,11 @@ def setup_log():
     pytesttools['collections'] = collections
 
 
+def check_transformation(input, expect):
+    result = refac.refactor_string(dedent(input + '\n'), 'script')
+    assert str(result) == dedent(expect + '\n')
+
+
 def check_passes(refac, statement_in, expect_out):
     result = refac.refactor_string(statement_in + '\n', 'script')
     statement_out = str(result)
@@ -51,16 +56,14 @@ def check_fails(refac, statement_in, expect_out):
 class Test1Arg:
 
     def test_params(self):
-        test_script = dedent("""
+        test_script = """
             log.print("hi")
 
             assert_true(a)
             assert_true(a, 'text')
             assert_true(a, msg='text')
-            """)
-
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+            """
+        check_transformation(test_script, """
             log.print("hi")
 
             assert a
@@ -69,8 +72,7 @@ class Test1Arg:
             """)
 
     def test_parens(self):
-        result = refac.refactor_string('assert_true(a + \nb)\n', 'script')
-        assert str(result) == 'assert (a + \nb)\n'
+        check_transformation('assert_true(a + \nb)', 'assert (a + \nb)')
 
     def test_same_results(self):
         check_passes(refac, 'assert_true(True)', 'assert True')
@@ -89,140 +91,113 @@ class Test1Arg:
 class Test2Args:
 
     def test_params(self):
-        test_script = dedent("""
+        test_script = """
             assert_in(a, b)
             assert_in(a, b, 'text')
             assert_in(a, b, msg='text')
-            """)
-
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+            """
+        check_transformation(test_script, """
             assert a in b
             assert a in b, 'text'
             assert a in b, 'text'
             """)
 
     def test_dont_add_parens(self):
-        result = refac.refactor_string('assert_in(a, c)\n', 'script')
-        assert str(result) == 'assert a in c\n'
-
-        result = refac.refactor_string('assert_in(a.b, c)\n', 'script')
-        assert str(result) == 'assert a.b in c\n'
-
-        result = refac.refactor_string('assert_in(a.b(), c)\n', 'script')
-        assert str(result) == 'assert a.b() in c\n'
-
-        result = refac.refactor_string('assert_in(a(), d)\n', 'script')
-        assert str(result) == 'assert a() in d\n'
-
-        result = refac.refactor_string('assert_in(a[1], d)\n', 'script')
-        assert str(result) == 'assert a[1] in d\n'
-
-        result = refac.refactor_string('assert_in((a+b), d)\n', 'script')
-        assert str(result) == 'assert (a+b) in d\n'
-
-        result = refac.refactor_string('assert_in((a+b), d)\n', 'script')
-        assert str(result) == 'assert (a+b) in d\n'
-
-        result = refac.refactor_string('assert_in(-a, +b)\n', 'script')
-        assert str(result) == 'assert -a in +b\n'
+        check_transformation('assert_in(a, c)',
+                             'assert a in c')
+        check_transformation('assert_in(a.b, c)',
+                             'assert a.b in c')
+        check_transformation('assert_in(a.b(), c)',
+                             'assert a.b() in c')
+        check_transformation('assert_in(a(), d)',
+                             'assert a() in d')
+        check_transformation('assert_in(a[1], d)',
+                             'assert a[1] in d')
+        check_transformation('assert_in((a+b), d)',
+                             'assert (a+b) in d')
+        check_transformation('assert_in((a+b), d)',
+                             'assert (a+b) in d')
+        check_transformation('assert_in(-a, +b)',
+                             'assert -a in +b')
 
     def test_add_parens(self):
-        result = refac.refactor_string('assert_in(a == b, d)\n', 'script')
-        assert str(result) == 'assert (a == b) in d\n'
-
-        result = refac.refactor_string('assert_in(a != b, d)\n', 'script')
-        assert str(result) == 'assert (a != b) in d\n'
-
-        result = refac.refactor_string('assert_in(b <= c, d)\n', 'script')
-        assert str(result) == 'assert (b <= c) in d\n'
-
-        result = refac.refactor_string('assert_in(c >= d, d)\n', 'script')
-        assert str(result) == 'assert (c >= d) in d\n'
-
-        result = refac.refactor_string('assert_in(d < e, d)\n', 'script')
-        assert str(result) == 'assert (d < e) in d\n'
-
-        result = refac.refactor_string('assert_in(d > e, d)\n', 'script')
-        assert str(result) == 'assert (d > e) in d\n'
-
-        result = refac.refactor_string('assert_equal(a in b, c)\n', 'script')
-        assert str(result) == 'assert (a in b) == c\n'
-
-        result = refac.refactor_string('assert_equal(a not in b, c)\n', 'script')
-        assert str(result) == 'assert (a not in b) == c\n'
-
-        result = refac.refactor_string('assert_equal(a is b, c)\n', 'script')
-        assert str(result) == 'assert (a is b) == c\n'
-
-        result = refac.refactor_string('assert_equal(a is not b, c)\n', 'script')
-        assert str(result) == 'assert (a is not b) == c\n'
-
-        result = refac.refactor_string('assert_equal(not a, c)\n', 'script')
-        assert str(result) == 'assert (not a) == c\n'
-
-        result = refac.refactor_string('assert_equal(a and b, c or d)\n', 'script')
-        assert str(result) == 'assert (a and b) == (c or d)\n'
-
-        result = refac.refactor_string('assert_in(a.b + c, d)\n', 'script')
-        assert str(result) == 'assert a.b + c in d\n'
-
-        result = refac.refactor_string('assert_in(a() + b, d)\n', 'script')
-        assert str(result) == 'assert a() + b in d\n'
-
-        result = refac.refactor_string('assert_in(a + b, c + d)\n', 'script')
-        assert str(result) == 'assert a + b in c + d\n'
-
-        result = refac.refactor_string('assert_in(a + b, c + d, "text")\n', 'script')
-        assert str(result) == 'assert a + b in c + d, "text"\n'
+        check_transformation('assert_in(a == b, d)',
+                             'assert (a == b) in d')
+        check_transformation('assert_in(a != b, d)',
+                             'assert (a != b) in d')
+        check_transformation('assert_in(b <= c, d)',
+                             'assert (b <= c) in d')
+        check_transformation('assert_in(c >= d, d)',
+                             'assert (c >= d) in d')
+        check_transformation('assert_in(d < e, d)',
+                             'assert (d < e) in d')
+        check_transformation('assert_in(d > e, d)',
+                             'assert (d > e) in d')
+        check_transformation('assert_equal(a in b, c)',
+                             'assert (a in b) == c')
+        check_transformation('assert_equal(a not in b, c)',
+                             'assert (a not in b) == c')
+        check_transformation('assert_equal(a is b, c)',
+                             'assert (a is b) == c')
+        check_transformation('assert_equal(a is not b, c)',
+                             'assert (a is not b) == c')
+        check_transformation('assert_equal(not a, c)',
+                             'assert (not a) == c')
+        check_transformation('assert_equal(a and b, c or d)',
+                             'assert (a and b) == (c or d)')
+        check_transformation('assert_in(a.b + c, d)',
+                             'assert a.b + c in d')
+        check_transformation('assert_in(a() + b, d)',
+                             'assert a() + b in d')
+        check_transformation('assert_in(a + b, c + d)',
+                             'assert a + b in c + d')
+        check_transformation('assert_in(a + b, c + d, "text")',
+                             'assert a + b in c + d, "text"')
+        check_transformation('assert_equal(a + b if c + d < 0 else e + f if g+h < 0 else i + j, -100)',
+                             'assert (a + b if c + d < 0 else e + f if g+h < 0 else i + j) == -100')
 
     def test_newline_all(self):
-        test_script = dedent("""
+        test_script = """
             assert_in(long_a,
                       long_b)
-        """)
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+        """
+        check_transformation(test_script, """
             assert (long_a in
                       long_b)
         """)
 
-        test_script = dedent("""
+        test_script = """
             assert_in(
                 long_a, long_b)
-        """)
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+        """
+        check_transformation(test_script, """
             assert (
                 long_a in long_b)
         """)
 
-        test_script = dedent("""
+        test_script = """
             assert_in(long_a,
                       long_b + something)
-        """)
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+        """
+        check_transformation(test_script, """
             assert (long_a in
                       long_b + something)
         """)
 
-        test_script = dedent("""
+        test_script = """
             assert_in(long_a,
                       long_b > something)
-        """)
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+        """
+        check_transformation(test_script, """
             assert (long_a in
                       (long_b > something))
         """)
 
-        test_script = dedent("""
+        test_script = """
             assert_in(a, long_b +
                          something)
-        """)
-        result = refac.refactor_string(test_script, 'script')
-        assert str(result) == dedent("""
+        """
+        check_transformation(test_script, """
             assert (a in long_b +
                          something)
         """)
@@ -299,6 +274,15 @@ class Test2Args:
 
 class Test3Args:
 
+    def test_no_add_parens(self):
+        check_transformation('assert_almost_equal(a * b, ~c, delta=d**e)', 'assert abs(a * b - ~c) <= d**e')
+
+    def test_add_parens(self):
+        check_transformation('assert_almost_equal(a + b, c, delta=d>e)', 'assert abs((a + b) - c) <= (d>e)')
+        check_transformation('assert_almost_equal(a | b, c ^ d, delta=0.1)', 'assert abs((a | b) - (c ^ d)) <= 0.1')
+        check_transformation('assert_almost_equal(a & b, c << d, delta=0.1)', 'assert abs((a & b) - (c << d)) <= 0.1')
+        check_transformation('assert_almost_equal(a or b, c >> d, delta=0.1)', 'assert abs((a or b) - (c >> d)) <= 0.1')
+
     def test_almost_equal(self):
         check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)', 'assert abs(123.456 - 123.5) <= 0.1')
         check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")', 'assert abs(123.456 - 123.5) <= 0.2, "text"')
@@ -321,12 +305,10 @@ class Test3Args:
         check_fails(refac,  'assert_not_almost_equals(123.456, 124, delta=0.6)', 'assert abs(123.456 - 124) > 0.6')
 
     def test_ignore_places(self):
-        statement_in = 'assert_almost_equal(123.456, 123.5, 2)\n'
-        result = refac.refactor_string(statement_in, 'script')
-        assert str(result) == statement_in
+        statement_in = 'assert_almost_equal(123.456, 123.5, 2)'
+        check_transformation(statement_in, statement_in)
 
-        statement_in = 'assert_almost_equal(123.456, 123.5, places=2)\n'
-        result = refac.refactor_string(statement_in, 'script')
-        assert str(result) == statement_in
+        statement_in = 'assert_almost_equal(123.456, 123.5, places=2)'
+        check_transformation(statement_in, statement_in)
 
 
