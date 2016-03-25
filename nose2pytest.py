@@ -1,5 +1,7 @@
-# Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see __license__ at bottom of this file for details).
+#! python
 """
+Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see __license__ at bottom of this file for details).
+
 This script transforms nose.tools.assert_* function calls into raw assert statements, while preserving format
 of original arguments as much as possible. A small subset of nose.tools.assert_* function calls is not
 transformed because there is no raw assert statement equivalent. However, if you don't use those functions
@@ -11,6 +13,8 @@ This script relies heavily on lib2to3, using it to find patterns of code to tran
 code nodes back into Python source code. The following article was very useful:
 http://python3porting.com/fixers.html#find-pattern.
 """
+
+__version__ = "1.0.0"
 
 import argparse
 import logging
@@ -43,7 +47,7 @@ def override(BaseClass):
     return decorator
 
 
-# FIXERS:
+# Transformations:
 
 grammar = pygram.python_grammar
 driver = pgen2.driver.Driver(grammar, convert=pytree.convert, logger=log)
@@ -554,7 +558,7 @@ __license__ = """
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
-    * Neither the name of pytest_from_nose nor the names of its
+    * Neither the name of nose2pytest nor the names of its
       contributors may be used to endorse or promote products derived from
       this software without specific prior written permission.
 

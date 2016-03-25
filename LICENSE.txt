@@ -1,6 +1,6 @@
-====================================
-License terms for nose2pytest
-====================================
+===========================================
+License terms for nose2pytest distribution
+===========================================
 
 Copyright (c) 2016, Oliver Schoenborn
 All rights reserved.

@@ -1,7 +1,13 @@
-# Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see __license__ at bottom of this file for details).
 """
-This module's assert_ functions can be imported in a test suite run by py.test. They are drop-in replacements
-for the nose.tools.assert_ functions but rely on py.test's assertion introspection for error reporting.
+Copyright 2016 Oliver Schoenborn. BSD 3-Clause license (see __license__ at bottom of this file for details).
+
+This module is part of the nose2pytest distribution.
+
+This module's assert_ functions provide drop-in replacements for nose.tools.assert_ functions (many of which are
+pep-8-ized extractions from Python's unittest.case.TestCase methods). As such, it can be imported in a test
+suite run by py.test, to replace the nose imports with functions that rely on py.test's assertion
+introspection for error reporting.  When combined with running nose2pytest.py on your test suite, this
+module may be sufficient to decrease your test suite's third-party dependencies by 1.
 """
 
 import unittest
@@ -99,7 +105,7 @@ __license__ = """
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
 
-    * Neither the name of pytest_from_nose nor the names of its
+    * Neither the name of nose2pytest nor the names of its
       contributors may be used to endorse or promote products derived from
       this software without specific prior written permission.
 
