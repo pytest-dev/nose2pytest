@@ -5,8 +5,12 @@ setup(
         name='nose2pytest',
         version='1.0.0',
         packages=[],
-        py_modules=['assert_tools',],
-        scripts=['nose2pytest.py'],
+        py_modules=['assert_tools', 'nose2pytest'],
+        entry_points={
+            'console_scripts': [
+                'nose2pytest = nose2pytest:main',
+            ],
+        },
         url='https://github.com/schollii/nose2pytest',
         license='BSD-3',
         author='Oliver Schoenborn',

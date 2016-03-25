@@ -538,10 +538,14 @@ def setup():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = setup()
     refac = NoseConversionRefactoringTool(args.verbose)
     refac.refactor_dir(args.dir_name, write=args.write)
+
+
+if __name__ == '__main__':
+    main()
 
 
 __license__ = """
