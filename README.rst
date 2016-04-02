@@ -1,4 +1,7 @@
 
+.. toctree::
+
+
 Overview
 ------------
 
@@ -6,54 +9,96 @@ This package provides a Python script to convert Nose-based tests into py.test-b
 it transforms ``nose.tools.assert_*`` function calls into raw assert statements, while preserving format
 of original arguments as much as possible. For example, 
 
-- ``assert_true(a[, msg])`` gets converted to ``assert a[, msg]``  
-- ``assert_greater(a, b[, msg])`` gets converted to ``assert a > b[, msg]``  
+- ``assert_true(a, msg)`` gets converted to ``assert a, msg``  
+- ``assert_greater(a, b, msg)`` gets converted to ``assert a > b, msg``  
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
-expression or involves newline::
+expression or involves newline. For example, ::
 
-    assert_true(some-long-expression-a in 
-                some-long-expression-b, msg)
-    assert_equal(a == b, b == c), msg
+  assert_true(some-long-expression-a in 
+              some-long-expression-b, msg)
+  assert_equal(a == b, b == c), msg
     
 gets converted to ::
 
-    assert (some-long-expression-a in 
-                some-long-expression-b), msg
-    assert (a == b) == (b == c), msg
+  assert (some-long-expression-a in 
+              some-long-expression-b), msg
+  assert (a == b) == (b == c), msg
 
 A small subset of ``nose.tools.assert_*`` function calls are not 
 transformed because there is no raw assert statement equivalent, or the equivalent would be hard to 
 maintain. 
 
 
+Installation
+-------------
+
+From a command shell run ::
+
+  pip install nose2pytest
+
+This puts an executable file in ``<python-root>/Scripts`` with *python-root* being the root folder of the 
+Python installation from which ``pip`` was run.
+
+
 Running
 ------------
 
-Run this script, giving it a folder to convert: it will find all .py files in the folder tree and 
-overwrite the original. Type ``nose2pytest -h`` for other options, such as -v. 
+From a command shell, ::
+
+  nose2pytest path/to/dir/with/python_files
+  
+This will find all ``.py`` files in the folder tree starting at ``path/to/dir/with/python_files`` and 
+overwrite the original (assuming most users will be running this on a version-controlled code base, this is
+almost always what would be most convenient). Type ``nose2pytest -h`` for other options, such as ``-v``. 
 
 
 Motivation
 ------------
 
-- This script makes it feasible to decrease the number of test dependencies of a code base. This is always a good thing.
-- Once a test suite is migrated from Nose to py.test, old test code remains that uses ``nose.tools.assert_*``
-  functions. Although new test code can be written in terms of raw assertions that py.test will introspect,  
-  it is better to have one obvious way to do things, and to be consistent; hence once the migration done, 
-  all assertions that have a readable, maintainable representation as raw assertions should be transformed so 
-  developers have one rule to follow in test code: use assert statements whenever possible. 
-- Developers tend to copy code so if test code uses ``assert_*`` functions then new test code is likely going to 
-  use it too, and one of the benefits of using py.test is diminished.
-- I often have to write the assertion expression first before I can decide which Nose assertion function to use:
-  do I want assert_equal, assert_is, assert_is_none, etc. With raw assert, I just write. 
+I have used Nose for years and it is a great tool. However, to get good test failure diagnostics with Nose you 
+ought to use the ``assert_*()`` functions from ``nose.tools``. Although they provide very good diagnostics, they 
+are not as convenient to use as raw assertions, since you have to decide before hand what type of assertion you 
+are going to write: an identity comparison to None, a truth check, a falseness check, an identity comparison to another 
+object, etc. Just being able to write a raw assertion, and still get good diagnostics on failure as done by 
+py.test, is really nice. This is a main reason for using py.test for me. Another reason is the design of fixtures
+in py.test.
+
+Switching an existing test suite from Nose to py.test is feasible even without nose2pytest, as it requires 
+relatively little work: *relatively* as in, you will probably only need a few modifications, all achievable 
+manually, to get the same test coverage and results. A few gotchas: 
+  
+  - test classes that have ``__init__`` will be ignored, those will have to be moved (usually, into class's 
+    ``setup_class()``)
+  - the ``setup.cfg`` may have to be edited since test discovery rules are slightly more strict with py.test
+  - the order of tests may be different, but in general that should not matter
+  - all test modules are imported up-front, so some test modules may need adjustment such as moving some 
+    code from the top of the test module into its ``setup_module()`` 
+    
+Once the above has been done to an existing code base, you don't really have to do anything else. However, your test 
+suite now has an additional third-party test dependency (Nose), just because of those ``assert_*`` functions used all 
+over the place. Moreover, there is no longer one obvious way to do things in your test suite: existing test code 
+uses ``nose.tools.assert_*`` functions, yet with py.test you can use raw assertions. If you add tests, which of 
+these two approaches should a developer use? If you modify existing tests, should new assertions use raw assert? 
+Should the remaining test method, test class, or test module be updated? A test module can contain hundreds of 
+calls to ``nose.tools.assert_*`` functions, is a developer to manually go through each one to convert it? Painful and 
+error prone, in general not feasible to do manually. 
+
+This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to py.test,
+but also have only py.test as a dependency, and have one obvious way to write assertions in the test suite. 
   
 
 Requirements
 -------------
 
-The script has so far only been tested with Python 3.4. The test platform has been so far only Windows 7 Pro 64, 
-but I don't expect any platform incompatibilities. 
+I expect nose2pytest script to run with Python >= 3.4, to correctly convert Python test suite >= 2.7, on any 
+OS supported by a version of python that has lib2to3 compatible with Python 3.4's lib2to3. I expect it to 
+succeed even with quite old versions of Nose (even prior to 1.0 which came out ca. 2010), and with the new 
+Nose2 test driver. 
+
+Note however that I have run the script only with Python 3.4, to convert Python 3.4 test suites based on 
+Nose 1.3.7 on Windows 7 Pro 64. If you have successfully used nose2pytest with other combinations, please 
+kindly let me know (via github). 
 
 
 Current Limitations
@@ -142,41 +187,41 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
 - Multi-line arguments: Python accepts multi-line expressions when they are surrounded by parentheses, brackets 
   or braces, but not otherwise. For example converting ::
 
-     assert_func(long_a +
-                  long_b, msg)
+    assert_func(long_a +
+                 long_b, msg)
 
   to ::
 
-     assert long_a +
-                long_b, msg
+    assert long_a +
+               long_b, msg
     
   yields invalid Python code. However, converting to the following yields valid Python code::
 
-     assert (long_a +
-                long_b), msg
+    assert (long_a +
+               long_b), msg
 
   So nose2pytest checks each argument expression (such as ``long_a +\n long_b``) to see if it has 
   newlines that would cause an invalid syntax, and if so, wraps them in parentheses. However, it is also important
   for readability of raw assertions that parentheses only be present if necessary. In other words, ::
 
-     assert_func((long_a +
-                  long_b), msg)
-     assert_func(z + (long_a +
-                      long_b), msg)
+    assert_func((long_a +
+                 long_b), msg)
+    assert_func(z + (long_a +
+                     long_b), msg)
 
   should convert to ::
 
-     assert (long_a +
-                long_b), msg
-     assert z + (long_a +
-                      long_b), msg)
+    assert (long_a +
+               long_b), msg
+    assert z + (long_a +
+                     long_b), msg)
     
   rather than ::
 
-     assert ((long_a +
-                long_b)), msg
-     assert (z + (long_a +
-                      long_b)), msg)
+    assert ((long_a +
+               long_b)), msg
+    assert (z + (long_a +
+                     long_b)), msg)
 
   So nose2pytest only tries to limit the addition of external parentheses to code that really needs it. 
    
@@ -193,3 +238,15 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
   ``assert a == b in c)``.
   
 
+Other tools
+------------
+
+If your test suite is unittest- or unittest2-based, or your Nose tests also use some unittest/2 functionatlity
+(such as ``setUp(self)`` method in test classes), then you might find the following useful: 
+
+- https://github.com/pytest-dev/unittest2pytest
+- https://github.com/dropbox/unittest2pytest
+
+I have used neither, so I can't make recommendations. However, if your Nose-based test suite uses both Nose/2 and 
+unittest/2 functionality (such as ``unittest.case.TestCase`` and/or ``setUp(self)/tearDown(self)`` methods), you 
+should be able to run both a unittest2pytest converter, then the nose2pytest converter. 
