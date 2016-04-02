@@ -1,5 +1,5 @@
 
-.. toctree::
+.. contents::
 
 
 Overview
@@ -68,12 +68,12 @@ Switching an existing test suite from Nose to py.test is feasible even without n
 relatively little work: *relatively* as in, you will probably only need a few modifications, all achievable 
 manually, to get the same test coverage and results. A few gotchas: 
   
-  - test classes that have ``__init__`` will be ignored, those will have to be moved (usually, into class's 
-    ``setup_class()``)
-  - the ``setup.cfg`` may have to be edited since test discovery rules are slightly more strict with py.test
-  - the order of tests may be different, but in general that should not matter
-  - all test modules are imported up-front, so some test modules may need adjustment such as moving some 
-    code from the top of the test module into its ``setup_module()`` 
+- test classes that have ``__init__`` will be ignored, those will have to be moved (usually, into class's 
+  ``setup_class()``)
+- the ``setup.cfg`` may have to be edited since test discovery rules are slightly more strict with py.test
+- the order of tests may be different, but in general that should not matter
+- all test modules are imported up-front, so some test modules may need adjustment such as moving some 
+  code from the top of the test module into its ``setup_module()`` 
     
 Once the above has been done to an existing code base, you don't really have to do anything else. However, your test 
 suite now has an additional third-party test dependency (Nose), just because of those ``assert_*`` functions used all 
@@ -173,6 +173,20 @@ I have no doubt that more limitations will arise as nose2pytest gets used on cod
 address these and existing limitations are most welcome.
  
  
+Other tools
+------------
+
+If your test suite is unittest- or unittest2-based, or your Nose tests also use some unittest/2 functionatlity
+(such as ``setUp(self)`` method in test classes), then you might find the following useful: 
+
+- https://github.com/pytest-dev/unittest2pytest
+- https://github.com/dropbox/unittest2pytest
+
+I have used neither, so I can't make recommendations. However, if your Nose-based test suite uses both Nose/2 and 
+unittest/2 functionality (such as ``unittest.case.TestCase`` and/or ``setUp(self)/tearDown(self)`` methods), you 
+should be able to run both a unittest2pytest converter, then the nose2pytest converter. 
+
+
 Solution Notes
 ---------------
 
@@ -237,16 +251,3 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
   ``assert_equal(a, b in c)`` converts to ``assert a == (b in c)`` but ``assert_in(a == b, c)`` converts to
   ``assert a == b in c)``.
   
-
-Other tools
-------------
-
-If your test suite is unittest- or unittest2-based, or your Nose tests also use some unittest/2 functionatlity
-(such as ``setUp(self)`` method in test classes), then you might find the following useful: 
-
-- https://github.com/pytest-dev/unittest2pytest
-- https://github.com/dropbox/unittest2pytest
-
-I have used neither, so I can't make recommendations. However, if your Nose-based test suite uses both Nose/2 and 
-unittest/2 functionality (such as ``unittest.case.TestCase`` and/or ``setUp(self)/tearDown(self)`` methods), you 
-should be able to run both a unittest2pytest converter, then the nose2pytest converter. 
