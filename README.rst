@@ -5,29 +5,21 @@
 Overview
 ------------
 
-This package provides a Python script to convert Nose-based tests into py.test-based tests. Specifically, 
-it transforms ``nose.tools.assert_*`` function calls into raw assert statements, while preserving format
-of original arguments as much as possible. For example, 
+This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based 
+tests. Specifically, the script transforms ``nose.tools.assert_*`` function calls into raw assert statements, 
+while preserving format of original arguments as much as possible. For example, the script ::
 
-- ``assert_true(a, msg)`` gets converted to ``assert a, msg``  
-- ``assert_greater(a, b, msg)`` gets converted to ``assert a > b, msg``  
-
-The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
-expression or involves newline. For example, ::
-
-  assert_true(some-long-expression-a in 
-              some-long-expression-b, msg)
-  assert_equal(a == b, b == c), msg
-    
-gets converted to ::
-
-  assert (some-long-expression-a in 
-              some-long-expression-b), msg
-  assert (a == b) == (b == c), msg
+  from nose.tools import assert_true, assert_greater, assert_almost_equal
+  assert_true(a, msg)
+  assert_greater(a, b, msg)
+  
+  from pytest import assert_almost_equal
+  assert a, msg
+  assert a > b, msg
 
 A small subset of ``nose.tools.assert_*`` function calls are not 
 transformed because there is no raw assert statement equivalent, or the equivalent would be hard to 
-maintain. 
+maintain. They are provided as functions in the pytest namespace via py.test's plugin system.
 
 
 Installation
@@ -100,9 +92,31 @@ Note however that I have run the script only with Python 3.4, to convert Python 
 Nose 1.3.7 on Windows 7 Pro 64. If you have successfully used nose2pytest with other combinations, please 
 kindly let me know (via github). 
 
+The pytest package namespace will be extended with ``assert_`` functions that are not converted by the script
+only if, err, you have py.test installed!
 
-Current Limitations
+
+Capabilities and Limitations
+------------------------------
+
+The following conversions are covered:
+
 ---------------------
+---------------------
+
+The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
+expression or involves newline. For example, ::
+
+  assert_true(some-long-expression-a in 
+              some-long-expression-b, msg)
+  assert_equal(a == b, b == c), msg
+    
+gets converted to ::
+
+  assert (some-long-expression-a in 
+              some-long-expression-b), msg
+  assert (a == b) == (b == c), msg
+
 
 Not every ``nose.tools.assert_*`` function is converted by nose2pytest: 
 
