@@ -75,21 +75,37 @@ def assert_dict_contains_subset(subset, dictionary, msg=None):
         assert mismatch_vals == {}, msg
 
 
-# Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
+# make other unittest.TestCase methods available as-is as functions; trick taken from Nose
 
 class _Dummy(unittest.TestCase):
-    def nop():
+    def do_nothing(self):
         pass
 
-_t = _Dummy('nop')
+_t = _Dummy('do_nothing')
 
-assert_raises_regex = _t.assertRaisesRegex
-assert_raises_regexp = _t.assertRaisesRegexp
-assert_regexp_matches = _t.assertRegexpMatches
-assert_warns_regex = _t.assertWarnsRegex
+assert_raises_regex=_t.assertRaisesRegex,
+assert_raises_regexp=_t.assertRaisesRegexp,
+assert_regexp_matches=_t.assertRegexpMatches,
+assert_warns_regex=_t.assertWarnsRegex,
 
 del _Dummy
 del _t
+
+
+# py.test integration: add all assert_ function to the pytest package namespace
+
+# Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
+
+def pytest_namespace() -> {str: callable}:
+    namespace = {}
+    for name, obj in globals().items():
+        if name.startswith('assert_'):
+            namespace[name] = obj
+
+    return namespace
+
+
+# licensing
 
 __license__ = """
     Copyright (c) 2016, Oliver Schoenborn
