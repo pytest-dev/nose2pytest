@@ -102,6 +102,46 @@ Capabilities and Limitations
 The following conversions are covered:
 
 ---------------------
+        assert_true=('a', None),
+        assert_false=('not a', 1),
+        assert_is_none=('a is None', 0),
+        assert_is_not_none=('a is not None', 0),
+
+
+        assert_equal=('a == b', (0, 2)),
+        assert_equals=('a == b', (0, 2)),
+        assert_not_equal=('a != b', (0, 2)),
+        assert_not_equals=('a != b', (0, 2)),
+
+        assert_list_equal=('a == b', (0, 2)),
+        assert_dict_equal=('a == b', (0, 2)),
+        assert_set_equal=('a == b', (0, 2)),
+        assert_sequence_equal=('a == b', (0, 2)),
+        assert_tuple_equal=('a == b', (0, 2)),
+        assert_multi_line_equal=('a == b', (0, 2)),
+
+        assert_greater=('a > b', (0, 2)),
+        assert_greater_equal=('a >= b', (0, 2)),
+        assert_less=('a < b', (0, 2)),
+        assert_less_equal=('a <= b', (0, 2)),
+
+        assert_in=('a in b', (0, 2)),
+        assert_not_in=('a not in b', (0, 2)),
+
+        assert_is=('a is b', (0, 2)),
+        assert_is_not=('a is not b', (0, 2)),
+
+        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 2), False)),
+        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1), False)),
+        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0), False)),
+        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0), False)),
+
+
+        assert_almost_equal=('abs(a - b) <= delta',     ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_almost_equals=('abs(a - b) <= delta',    ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_not_almost_equal=('abs(a - b) > delta',  ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+
 ---------------------
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 

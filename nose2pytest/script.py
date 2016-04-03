@@ -457,10 +457,10 @@ class FixAssertAlmostEq(FixAssertBase):
 
     # See FixAssert2Args for an explanation of the conversion data
     conversions = dict(
-            assert_almost_equal=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-            assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-            assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-            assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_almost_equal=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
     )
 
     @override(FixAssertBase)
