@@ -12,11 +12,11 @@ This package provides a Python script and py.test plugin to help convert Nose-ba
 tests. Specifically, the script transforms ``nose.tools.assert_*`` function calls into raw assert statements, 
 while preserving format of original arguments as much as possible. For example, the script ::
 
-  from nose.tools import assert_true, assert_greater, assert_almost_equal
   assert_true(a, msg)
   assert_greater(a, b, msg)
   
-  from pytest import assert_almost_equal
+gets converted to ::
+
   assert a, msg
   assert a > b, msg
 
