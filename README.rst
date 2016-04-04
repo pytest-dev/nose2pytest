@@ -96,53 +96,53 @@ The pytest package namespace will be extended with ``assert_`` functions that ar
 only if, err, you have py.test installed!
 
 
-Capabilities and Limitations
+Status
 ------------------------------
 
-The following conversions are covered:
+The package has been used on over 5000 ``assert_*()`` function calls, among which the pypubsub test suite.
+I consider it stable, but I have only used it on my code, and code by a few other developers. Feedback on 
+results of conversions would be most appreciated (such as version information and number of assert statements
+converted).
+ 
+The following conversions have been implemented:
 
----------------------
-        assert_true=('a', None),
-        assert_false=('not a', 1),
-        assert_is_none=('a is None', 0),
-        assert_is_not_none=('a is not None', 0),
-
-
-        assert_equal=('a == b', (0, 2)),
-        assert_equals=('a == b', (0, 2)),
-        assert_not_equal=('a != b', (0, 2)),
-        assert_not_equals=('a != b', (0, 2)),
-
-        assert_list_equal=('a == b', (0, 2)),
-        assert_dict_equal=('a == b', (0, 2)),
-        assert_set_equal=('a == b', (0, 2)),
-        assert_sequence_equal=('a == b', (0, 2)),
-        assert_tuple_equal=('a == b', (0, 2)),
-        assert_multi_line_equal=('a == b', (0, 2)),
-
-        assert_greater=('a > b', (0, 2)),
-        assert_greater_equal=('a >= b', (0, 2)),
-        assert_less=('a < b', (0, 2)),
-        assert_less_equal=('a <= b', (0, 2)),
-
-        assert_in=('a in b', (0, 2)),
-        assert_not_in=('a not in b', (0, 2)),
-
-        assert_is=('a is b', (0, 2)),
-        assert_is_not=('a is not b', (0, 2)),
-
-        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 2), False)),
-        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1), False)),
-        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0), False)),
-        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0), False)),
-
-
-        assert_almost_equal=('abs(a - b) <= delta',     ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_almost_equals=('abs(a - b) <= delta',    ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_not_almost_equal=('abs(a - b) > delta',  ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-
----------------------
+============================================ =================================================================
+Function                                     Statement
+============================================ =================================================================
+assert_true(a[, msg])                        assert a[, msg]
+assert_false(a[, msg])                       assert not a[, msg]
+assert_is_none(a[, msg])                     assert a is None[, msg]
+assert_is_not_none(a[, msg])                 assert a is not None[, msg]
+-------------------------------------------- -----------------------------------------------------------------
+assert_equal(a,b[, msg])                     assert a == b[, msg]
+assert_equals(a,b[, msg])                    assert a == b[, msg]
+assert_not_equal(a,b[, msg])                 assert a != b[, msg]
+assert_not_equals(a,b[, msg])                assert a != b[, msg]
+assert_list_equal(a,b[, msg])                assert a == b[, msg]
+assert_dict_equal(a,b[, msg])                assert a == b[, msg]
+assert_set_equal(a,b[, msg])                 assert a == b[, msg]
+assert_sequence_equal(a,b[, msg])            assert a == b[, msg]
+assert_tuple_equal(a,b[, msg])               assert a == b[, msg]
+assert_multi_line_equal(a,b[, msg])          assert a == b[, msg]
+assert_greater(a,b[, msg])                   assert a > b[, msg]
+assert_greater_equal(a,b[, msg])             assert a >= b[, msg]
+assert_less(a,b[, msg])                      assert a < b[, msg]
+assert_less_equal(a,b[, msg])                assert a <= b[, msg]
+assert_in(a,b[, msg])                        assert a in b[, msg]
+assert_not_in(a,b[, msg])                    assert a not in b[, msg]
+assert_is(a,b[, msg])                        assert a is b[, msg]
+assert_is_not(a,b[, msg])                    assert a is not b[, msg]
+-------------------------------------------- -----------------------------------------------------------------
+assert_is_instance(a,b[, msg])               assert isinstance(a, b)[, msg]
+assert_count_equal(a,b[, msg])               assert collections.Counter(a) == collections.Counter(b)[, msg]
+assert_not_regex(a,b[, msg])                 assert not re.search(b, a)[, msg]
+assert_regex(a,b[, msg])                     assert re.search(b, a)[, msg]
+-------------------------------------------- -----------------------------------------------------------------
+assert_almost_equal(a,b, delta[, msg])       assert abs(a - b) <= delta[, msg]
+assert_almost_equals(a,b, delta[, msg])      assert abs(a - b) <= delta[, msg]
+assert_not_almost_equal(a,b, delta[, msg])   assert abs(a - b) > delta[, msg]
+assert_not_almost_equals(a,b, delta[, msg])  assert abs(a - b) > delta[, msg]
+============================================ =================================================================
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
 expression or involves newline. For example, ::
@@ -157,6 +157,14 @@ gets converted to ::
               some-long-expression-b), msg
   assert (a == b) == (b == c), msg
 
+
+The script does not convert ``nose.tools.assert_`` import statements as there are too many possibilities. 
+Should ``from nose.tools import ...`` be changed to ``from pytest import ...``, and the implemented 
+conversions removed? Should an ``import pytest`` statement be added, and if so, where? If it is added after
+the line that had the ``nose.tools`` import, is the previous line really needed? Indeed the ``assert_``
+functions added in the ``pytest`` namespace could be accessed via ``pytest.assert_``, in which case the 
+script should prepend ``pytest.`` and remove the ``from nose.tools import ...`` entirely. Too many options, 
+and you can fairly easily handle this via a global regexp search/replace.
 
 Not every ``nose.tools.assert_*`` function is converted by nose2pytest: 
 
@@ -223,7 +231,7 @@ There are other limitations:
   These should be rare, are easy to spot (your IDE will flag the syntax error, or you will get an exception 
   on import), and are easy to fix by changing from a lambda expression to a local function.
   
-I have no doubt that more limitations will arise as nose2pytest gets used on code bases. Contributions to 
+I have no doubt that more limitations will arise as nose2pytest gets used on more code bases. Contributions to 
 address these and existing limitations are most welcome.
  
  
@@ -305,3 +313,11 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
   ``assert_equal(a, b in c)`` converts to ``assert a == (b in c)`` but ``assert_in(a == b, c)`` converts to
   ``assert a == b in c)``.
   
+
+Acknowledgements
+----------------
+
+Thanks to (AFAICT) Lennart Regebro for having written http://python3porting.com/fixers.html#find-pattern, and 
+to those who answered 
+`my question on SO <http://stackoverflow.com/questions/35169154/pattern-to-match-1-or-2-arg-function-call-for-lib2to3>`_
+and `my question on pytest-dev <https://mail.python.org/pipermail/pytest-dev/2016-March/003497.html>`_.
