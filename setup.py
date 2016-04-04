@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
-        version='1.0.1',
+        version='1.0.2',
         packages=['nose2pytest'],
         # py_modules=['assert_tools', 'nose2pytest'],
         entry_points={
