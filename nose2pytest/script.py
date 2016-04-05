@@ -238,8 +238,10 @@ class FixAssertBase(fixer_base.BaseFix):
 
     # Each derived class should define a dictionary where the key is the name of the nose function to convert,
     # and the value is a pair where the first item is the assertion statement expression, and the second item
-    # is data that will be available in _transform_dest() override as self._conv_data.
+    # is data that will be available in _transform_dest() override as self._arg_paths.
     conversions = None
+
+    DEFAULT_ARG_PATHS = None
 
     @classmethod
     def create_all(cls, *args, **kwargs) -> [fixer_base.BaseFix]:
@@ -254,9 +256,14 @@ class FixAssertBase(fixer_base.BaseFix):
         return fixers
 
     def __init__(self, nose_func_name: str, *args, **kwargs):
-        test_expr, conv_data = self.conversions[nose_func_name]
+        if self.DEFAULT_ARG_PATHS is None:
+            test_expr, conv_data = self.conversions[nose_func_name]
+            self._arg_paths = conv_data
+        else:
+            test_expr = self.conversions[nose_func_name]
+            self._arg_paths = self.DEFAULT_ARG_PATHS
+
         self.nose_func_name = nose_func_name
-        self._conv_data = conv_data
 
         self.PATTERN = self.PATTERN.format(nose_func_name)
         log.info('%s will convert %s as "assert %s"', self.__class__.__name__, nose_func_name, test_expr)
@@ -350,9 +357,9 @@ class FixAssert1Arg(FixAssertBase):
 
     PATTERN = PATTERN_1_OR_2_ARGS
 
-    # the conv data is a node children indices path from the PyNode that represents the assertion expression.
+    # the path to arg node is different for every conversion
     # Example: assert_false(a) becomes "assert not a", so the PyNode for assertion expression is 'not a', and
-    # the 'a' is its children[1] so self._conv_data needs to be 1.
+    # the 'a' is its children[1] so self._arg_paths needs to be 1.
     conversions = dict(
         assert_true=('a', None),
         assert_false=('not a', 1),
@@ -367,7 +374,7 @@ class FixAssert1Arg(FixAssertBase):
         test.prefix = " "
 
         # the destination node for 'a' is in conv_data:
-        dest_node = self._get_node(assert_arg_test_node, self._conv_data)
+        dest_node = self._get_node(assert_arg_test_node, self._arg_paths)
         dest_node.replace(test)
 
         return True
@@ -381,45 +388,20 @@ class FixAssert2Args(FixAssertBase):
 
     PATTERN = PATTERN_2_OR_3_ARGS
 
-    # The conversion data (2nd item of the value; see base class docs) is a pair of "node paths": the first
-    # node path is to "a", the second one is to "b", relative to the assertion expression.
+    NEED_ARGS_PARENS = False
+
+    # The args node paths are different for every conversion so the second item of each pair is paths infom
+    # per base class. Here the paths info is itself a pair, one for arg a and the other for arg b.
     #
-    # Example 1: assert_equal(a, b) will convert to "assert a == b" so the PyNode for assertion expression
-    # is 'a == b' and a is that node's children[0], whereas b is that node's children[2], so the self._conv_data
-    # is simply (0, 2).
-    #
-    # Example 2: assert_is_instance(a, b) converts to "assert isinstance(a, b)" so the conversion data is
+    # Example: assert_is_instance(a, b) converts to "assert isinstance(a, b)" so the conversion data is
     # the pair of node paths (1, 1, 0) and (1, 1, 1) since from the PyNode for the assertion expression
     # "isinstance(a, b)", 'a' is that node's children[1].children[1].children[0], whereas 'b' is
     # that node's children[1].children[1].children[1].
     conversions = dict(
-        assert_equal=('a == b', (0, 2)),
-        assert_equals=('a == b', (0, 2)),
-        assert_not_equal=('a != b', (0, 2)),
-        assert_not_equals=('a != b', (0, 2)),
-
-        assert_list_equal=('a == b', (0, 2)),
-        assert_dict_equal=('a == b', (0, 2)),
-        assert_set_equal=('a == b', (0, 2)),
-        assert_sequence_equal=('a == b', (0, 2)),
-        assert_tuple_equal=('a == b', (0, 2)),
-        assert_multi_line_equal=('a == b', (0, 2)),
-
-        assert_greater=('a > b', (0, 2)),
-        assert_greater_equal=('a >= b', (0, 2)),
-        assert_less=('a < b', (0, 2)),
-        assert_less_equal=('a <= b', (0, 2)),
-
-        assert_in=('a in b', (0, 2)),
-        assert_not_in=('a not in b', (0, 2)),
-
-        assert_is=('a is b', (0, 2)),
-        assert_is_not=('a is not b', (0, 2)),
-
-        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 2), False)),
-        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1), False)),
-        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0), False)),
-        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0), False)),
+        assert_is_instance=('isinstance(a, b)', ((1, 1, 0), (1, 1, 2))),
+        assert_count_equal=('collections.Counter(a) == collections.Counter(b)', ((0, 2, 1), (2, 2, 1))),
+        assert_not_regex=('not re.search(b, a)', ((1, 2, 1, 2), (1, 2, 1, 0))),
+        assert_regex=('re.search(b, a)', ((2, 1, 2), (2, 1, 0))),
     )
 
     @override(FixAssertBase)
@@ -429,22 +411,60 @@ class FixAssert2Args(FixAssertBase):
         rhs = results["rhs"]
         rhs = rhs.clone()
 
-        dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
-        dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
+        dest1 = self._get_node(assert_arg_test_node, self._arg_paths[0])
+        dest2 = self._get_node(assert_arg_test_node, self._arg_paths[1])
 
-        # only transformations that involve a comparison operator may need wrapping in parens
-        trans_op_is_comparison = len(self._conv_data) <= 2 or self._conv_data[2]
-
-        new_lhs = wrap_parens_for_comparison(lhs) if trans_op_is_comparison else lhs
+        new_lhs = wrap_parens_for_comparison(lhs) if self.NEED_ARGS_PARENS else lhs
         dest1.replace(new_lhs)
         adjust_prefix_first_arg(new_lhs, results["lhs"].prefix)
 
-        new_rhs = wrap_parens_for_comparison(rhs) if trans_op_is_comparison else rhs
+        new_rhs = wrap_parens_for_comparison(rhs) if self.NEED_ARGS_PARENS else rhs
         dest2.replace(new_rhs)
         if get_prev_sibling(new_rhs).type in NEWLINE_OK_TOKENS:
             new_rhs.prefix = ''
 
         return True
+
+
+class FixAssertBinOp(FixAssert2Args):
+    """
+    Fixer class for any 2-argument assertion function (assert_func(a, b)) that is of the form "a binop b".
+    """
+
+    NEED_ARGS_PARENS = True
+
+    # The args node paths are the same for every binary comparison assertion: the first element is for
+    # arg a, the second for arg b
+    #
+    # Example 1: assert_equal(a, b) will convert to "assert a == b" so the PyNode for assertion expression
+    # is 'a == b' and a is that node's children[0], whereas b is that node's children[2], so the self._arg_paths
+    # will be simply (0, 2).
+    DEFAULT_ARG_PATHS = (0, 2)
+
+    conversions = dict(
+        assert_equal='a == b',
+        assert_equals='a == b',
+        assert_not_equal='a != b',
+        assert_not_equals='a != b',
+
+        assert_list_equal='a == b',
+        assert_dict_equal='a == b',
+        assert_set_equal='a == b',
+        assert_sequence_equal='a == b',
+        assert_tuple_equal='a == b',
+        assert_multi_line_equal='a == b',
+
+        assert_greater='a > b',
+        assert_greater_equal='a >= b',
+        assert_less='a < b',
+        assert_less_equal='a <= b',
+
+        assert_in='a in b',
+        assert_not_in='a not in b',
+
+        assert_is='a is b',
+        assert_is_not='a is not b',
+    )
 
 
 class FixAssertAlmostEq(FixAssertBase):
@@ -455,12 +475,15 @@ class FixAssertAlmostEq(FixAssertBase):
 
     PATTERN = PATTERN_ALMOST_ARGS
 
-    # See FixAssert2Args for an explanation of the conversion data
+    # The args node paths are the same for every assert function: the first tuple is for
+    # arg a, the second for arg b, the third for arg c (delta).
+    DEFAULT_ARG_PATHS = ((0, 1, 1, 0), (0, 1, 1, 2), 2)
+
     conversions = dict(
-        assert_almost_equal=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_almost_equals=('abs(a - b) <= delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_not_almost_equal=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
-        assert_not_almost_equals=('abs(a - b) > delta', ((0, 1, 1, 0), (0, 1, 1, 2), 2)),
+        assert_almost_equal='abs(a - b) <= delta',
+        assert_almost_equals='abs(a - b) <= delta',
+        assert_not_almost_equal='abs(a - b) > delta',
+        assert_not_almost_equals='abs(a - b) > delta',
     )
 
     @override(FixAssertBase)
@@ -472,15 +495,15 @@ class FixAssertAlmostEq(FixAssertBase):
         aaa = results["aaa"].clone()
         bbb = results["bbb"].clone()
 
-        dest1 = self._get_node(assert_arg_test_node, self._conv_data[0])
+        dest1 = self._get_node(assert_arg_test_node, self._arg_paths[0])
         new_aaa = wrap_parens_for_addsub(aaa)
         dest1.replace(new_aaa)
         adjust_prefix_first_arg(new_aaa, results["aaa"].prefix)
 
-        dest2 = self._get_node(assert_arg_test_node, self._conv_data[1])
+        dest2 = self._get_node(assert_arg_test_node, self._arg_paths[1])
         dest2.replace(wrap_parens_for_addsub(bbb))
 
-        dest3 = self._get_node(assert_arg_test_node, self._conv_data[2])
+        dest3 = self._get_node(assert_arg_test_node, self._arg_paths[2])
         if delta.children[0] == PyLeaf(token.NAME, 'delta'):
             delta_val = delta.children[2]
             delta_val.prefix = " "
@@ -514,6 +537,7 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
 
         pre_fixers.extend(FixAssert1Arg.create_all(self.options, self.fixer_log))
         pre_fixers.extend(FixAssert2Args.create_all(self.options, self.fixer_log))
+        pre_fixers.extend(FixAssertBinOp.create_all(self.options, self.fixer_log))
         pre_fixers.extend(FixAssertAlmostEq.create_all(self.options, self.fixer_log))
 
         return pre_fixers, post_fixers
