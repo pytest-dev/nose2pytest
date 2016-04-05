@@ -1,4 +1,4 @@
-Nose2pytest version 1.0.3 documentation
+Nose2pytest version 1.0.4 documentation
 =========================================
 
 

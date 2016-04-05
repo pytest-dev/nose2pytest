@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>Nose2pytest version 1.0.4 documentation</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="nose2pytest-version-1-0-4-documentation">
+<h1 class="title">Nose2pytest version 1.0.4 documentation</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#installation" id="id2">Installation</a></li>
+<li><a class="reference internal" href="#running" id="id3">Running</a></li>
+<li><a class="reference internal" href="#motivation" id="id4">Motivation</a></li>
+<li><a class="reference internal" href="#requirements" id="id5">Requirements</a></li>
+<li><a class="reference internal" href="#status" id="id6">Status</a></li>
+<li><a class="reference internal" href="#other-tools" id="id7">Other tools</a></li>
+<li><a class="reference internal" href="#solution-notes" id="id8">Solution Notes</a></li>
+<li><a class="reference internal" href="#acknowledgements" id="id9">Acknowledgements</a></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id1">Overview</a></h1>
+<p>This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based
+tests. Specifically, the script transforms <tt class="docutils literal">nose.tools.assert_*</tt> function calls into raw assert statements,
+while preserving format of original arguments as much as possible. For example, the script</p>
+<pre class="literal-block">
+assert_true(a, msg)
+assert_greater(a, b, msg)
+</pre>
+<p>gets converted to</p>
+<pre class="literal-block">
+assert a, msg
+assert a &gt; b, msg
+</pre>
+<p>A small subset of <tt class="docutils literal">nose.tools.assert_*</tt> function calls are not
+transformed because there is no raw assert statement equivalent, or the equivalent would be hard to
+maintain. They are provided as functions in the pytest namespace via py.test's plugin system.</p>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id2">Installation</a></h1>
+<p>From a command shell run</p>
+<pre class="literal-block">
+pip install nose2pytest
+</pre>
+<p>This puts an executable file in <tt class="docutils literal"><span class="pre">&lt;python-root&gt;/Scripts</span></tt> with <em>python-root</em> being the root folder of the
+Python installation from which <tt class="docutils literal">pip</tt> was run.</p>
+</div>
+<div class="section" id="running">
+<h1><a class="toc-backref" href="#id3">Running</a></h1>
+<p>From a command shell,</p>
+<pre class="literal-block">
+nose2pytest path/to/dir/with/python_files
+</pre>
+<p>This will find all <tt class="docutils literal">.py</tt> files in the folder tree starting at <tt class="docutils literal">path/to/dir/with/python_files</tt> and
+overwrite the original (assuming most users will be running this on a version-controlled code base, this is
+almost always what would be most convenient). Type <tt class="docutils literal">nose2pytest <span class="pre">-h</span></tt> for other options, such as <tt class="docutils literal"><span class="pre">-v</span></tt>.</p>
+</div>
+<div class="section" id="motivation">
+<h1><a class="toc-backref" href="#id4">Motivation</a></h1>
+<p>I have used Nose for years and it is a great tool. However, to get good test failure diagnostics with Nose you
+ought to use the <tt class="docutils literal"><span class="pre">assert_*()</span></tt> functions from <tt class="docutils literal">nose.tools</tt>. Although they provide very good diagnostics, they
+are not as convenient to use as raw assertions, since you have to decide before hand what type of assertion you
+are going to write: an identity comparison to None, a truth check, a falseness check, an identity comparison to another
+object, etc. Just being able to write a raw assertion, and still get good diagnostics on failure as done by
+py.test, is really nice. This is a main reason for using py.test for me. Another reason is the design of fixtures
+in py.test.</p>
+<p>Switching an existing test suite from Nose to py.test is feasible even without nose2pytest, as it requires
+relatively little work: <em>relatively</em> as in, you will probably only need a few modifications, all achievable
+manually, to get the same test coverage and results. A few gotchas:</p>
+<ul class="simple">
+<li>test classes that have <tt class="docutils literal">__init__</tt> will be ignored, those will have to be moved (usually, into class's
+<tt class="docutils literal">setup_class()</tt>)</li>
+<li>the <tt class="docutils literal">setup.cfg</tt> may have to be edited since test discovery rules are slightly more strict with py.test</li>
+<li>the order of tests may be different, but in general that should not matter</li>
+<li>all test modules are imported up-front, so some test modules may need adjustment such as moving some
+code from the top of the test module into its <tt class="docutils literal">setup_module()</tt></li>
+</ul>
+<p>Once the above has been done to an existing code base, you don't really have to do anything else. However, your test
+suite now has an additional third-party test dependency (Nose), just because of those <tt class="docutils literal">assert_*</tt> functions used all
+over the place. Moreover, there is no longer one obvious way to do things in your test suite: existing test code
+uses <tt class="docutils literal">nose.tools.assert_*</tt> functions, yet with py.test you can use raw assertions. If you add tests, which of
+these two approaches should a developer use? If you modify existing tests, should new assertions use raw assert?
+Should the remaining test method, test class, or test module be updated? A test module can contain hundreds of
+calls to <tt class="docutils literal">nose.tools.assert_*</tt> functions, is a developer to manually go through each one to convert it? Painful and
+error prone, in general not feasible to do manually.</p>
+<p>This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to py.test,
+but also have only py.test as a dependency, and have one obvious way to write assertions in the test suite.</p>
+</div>
+<div class="section" id="requirements">
+<h1><a class="toc-backref" href="#id5">Requirements</a></h1>
+<p>I expect nose2pytest script to run with Python &gt;= 3.4, to correctly convert Python test suite &gt;= 2.7, on any
+OS supported by a version of python that has lib2to3 compatible with Python 3.4's lib2to3. I expect it to
+succeed even with quite old versions of Nose (even prior to 1.0 which came out ca. 2010), and with the new
+Nose2 test driver.</p>
+<p>Note however that I have run the script only with Python 3.4, to convert Python 3.4 test suites based on
+Nose 1.3.7 on Windows 7 Pro 64. If you have successfully used nose2pytest with other combinations, please
+kindly let me know (via github).</p>
+<p>The pytest package namespace will be extended with <tt class="docutils literal">assert_</tt> functions that are not converted by the script
+only if, err, you have py.test installed!</p>
+</div>
+<div class="section" id="status">
+<h1><a class="toc-backref" href="#id6">Status</a></h1>
+<p>The package has been used on over 5000 <tt class="docutils literal"><span class="pre">assert_*()</span></tt> function calls, among which the pypubsub test suite.
+I consider it stable, but I have only used it on my code, and code by a few other developers. Feedback on
+results of conversions would be most appreciated (such as version information and number of assert statements
+converted).</p>
+<p>The following conversions have been implemented:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Function</th>
+<th class="head">Statement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>assert_true(a[, msg])</td>
+<td>assert a[, msg]</td>
+</tr>
+<tr><td>assert_false(a[, msg])</td>
+<td>assert not a[, msg]</td>
+</tr>
+<tr><td>assert_is_none(a[, msg])</td>
+<td>assert a is None[, msg]</td>
+</tr>
+<tr><td>assert_is_not_none(a[, msg])</td>
+<td>assert a is not None[, msg]</td>
+</tr>
+<tr><td>assert_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_equals(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_not_equal(a,b[, msg])</td>
+<td>assert a != b[, msg]</td>
+</tr>
+<tr><td>assert_not_equals(a,b[, msg])</td>
+<td>assert a != b[, msg]</td>
+</tr>
+<tr><td>assert_list_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_dict_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_set_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_sequence_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_tuple_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_multi_line_equal(a,b[, msg])</td>
+<td>assert a == b[, msg]</td>
+</tr>
+<tr><td>assert_greater(a,b[, msg])</td>
+<td>assert a &gt; b[, msg]</td>
+</tr>
+<tr><td>assert_greater_equal(a,b[, msg])</td>
+<td>assert a &gt;= b[, msg]</td>
+</tr>
+<tr><td>assert_less(a,b[, msg])</td>
+<td>assert a &lt; b[, msg]</td>
+</tr>
+<tr><td>assert_less_equal(a,b[, msg])</td>
+<td>assert a &lt;= b[, msg]</td>
+</tr>
+<tr><td>assert_in(a,b[, msg])</td>
+<td>assert a in b[, msg]</td>
+</tr>
+<tr><td>assert_not_in(a,b[, msg])</td>
+<td>assert a not in b[, msg]</td>
+</tr>
+<tr><td>assert_is(a,b[, msg])</td>
+<td>assert a is b[, msg]</td>
+</tr>
+<tr><td>assert_is_not(a,b[, msg])</td>
+<td>assert a is not b[, msg]</td>
+</tr>
+<tr><td>assert_is_instance(a,b[, msg])</td>
+<td>assert isinstance(a, b)[, msg]</td>
+</tr>
+<tr><td>assert_count_equal(a,b[, msg])</td>
+<td>assert collections.Counter(a) == collections.Counter(b)[, msg]</td>
+</tr>
+<tr><td>assert_not_regex(a,b[, msg])</td>
+<td>assert not re.search(b, a)[, msg]</td>
+</tr>
+<tr><td>assert_regex(a,b[, msg])</td>
+<td>assert re.search(b, a)[, msg]</td>
+</tr>
+<tr><td>assert_almost_equal(a,b, delta[, msg])</td>
+<td>assert abs(a - b) &lt;= delta[, msg]</td>
+</tr>
+<tr><td>assert_almost_equals(a,b, delta[, msg])</td>
+<td>assert abs(a - b) &lt;= delta[, msg]</td>
+</tr>
+<tr><td>assert_not_almost_equal(a,b, delta[, msg])</td>
+<td>assert abs(a - b) &gt; delta[, msg]</td>
+</tr>
+<tr><td>assert_not_almost_equals(a,b, delta[, msg])</td>
+<td>assert abs(a - b) &gt; delta[, msg]</td>
+</tr>
+</tbody>
+</table>
+<p>The script adds parentheses around <tt class="docutils literal">a</tt> and/or <tt class="docutils literal">b</tt> if operator precedence would change the interpretation of the
+expression or involves newline. For example,</p>
+<pre class="literal-block">
+assert_true(some-long-expression-a in
+            some-long-expression-b, msg)
+assert_equal(a == b, b == c), msg
+</pre>
+<p>gets converted to</p>
+<pre class="literal-block">
+assert (some-long-expression-a in
+            some-long-expression-b), msg
+assert (a == b) == (b == c), msg
+</pre>
+<p>The script does not convert <tt class="docutils literal">nose.tools.assert_</tt> import statements as there are too many possibilities.
+Should <tt class="docutils literal">from nose.tools import ...</tt> be changed to <tt class="docutils literal">from pytest import ...</tt>, and the implemented
+conversions removed? Should an <tt class="docutils literal">import pytest</tt> statement be added, and if so, where? If it is added after
+the line that had the <tt class="docutils literal">nose.tools</tt> import, is the previous line really needed? Indeed the <tt class="docutils literal">assert_</tt>
+functions added in the <tt class="docutils literal">pytest</tt> namespace could be accessed via <tt class="docutils literal">pytest.assert_</tt>, in which case the
+script should prepend <tt class="docutils literal">pytest.</tt> and remove the <tt class="docutils literal">from nose.tools import ...</tt> entirely. Too many options,
+and you can fairly easily handle this via a global regexp search/replace.</p>
+<p>Not every <tt class="docutils literal">nose.tools.assert_*</tt> function is converted by nose2pytest:</p>
+<ol class="arabic">
+<li><p class="first">Some Nose functions can be handled via a global search-replace, so a fixer was not a necessity:</p>
+<ul class="simple">
+<li><tt class="docutils literal">assert_raises</tt>: replace with <tt class="docutils literal">pytest.raises</tt></li>
+<li><tt class="docutils literal">assert_warns</tt>: replace with <tt class="docutils literal">pytest.warns</tt></li>
+</ul>
+</li>
+<li><p class="first">Some Nose functions could be transformed but the readability would be decreased:</p>
+<ul class="simple">
+<li><tt class="docutils literal">assert_almost_equal(a, b, places)</tt> -&gt; <tt class="docutils literal">assert <span class="pre">round(abs(b-a),</span> places) == 0</tt></li>
+<li><tt class="docutils literal">assert_almost_equal(a, b)</tt> -&gt; <tt class="docutils literal">assert <span class="pre">round(abs(b-a),</span> 7) == 0</tt></li>
+<li><tt class="docutils literal">assert_not_almost_equal(a, b, places)</tt> -&gt; <tt class="docutils literal">assert <span class="pre">round(abs(b-a),</span> places) != 0</tt></li>
+<li><tt class="docutils literal">assert_not_almost_equal(a, b)</tt> -&gt; <tt class="docutils literal">assert <span class="pre">round(abs(b-a),</span> 7) != 0</tt></li>
+<li><tt class="docutils literal">assert_dict_contains_subset(a,b)</tt> -&gt; <tt class="docutils literal">assert <span class="pre">set(b.keys())</span> &gt;= a.keys() and {k: b[k] for k in a if k in b} == a</tt></li>
+</ul>
+<p>The nose2pytest distribution contains a module, <tt class="docutils literal">assert_tools.py</tt> which defines these utility functions to
+contain the equivalent raw assert statement. Copy the module into your test folder or into the pytest package
+and change your test code's <tt class="docutils literal">from nose.tools import ...</tt> statements accordingly. Py.test introspection will
+provide error information on assertion failure.</p>
+</li>
+<li><p class="first">Some Nose functions don't have a one-line assert statement equivalent, they have to remain utility functions:</p>
+<ul class="simple">
+<li><tt class="docutils literal">assert_raises_regex</tt></li>
+<li><tt class="docutils literal">assert_raises_regexp</tt>  # deprecated by Nose</li>
+<li><tt class="docutils literal">assert_regexp_matches</tt> # deprecated by Nose</li>
+<li><tt class="docutils literal">assert_warns_regex</tt></li>
+</ul>
+<p>These functions are available in <tt class="docutils literal">assert_tools.py</tt> of nose2pytest distribution, and are imported as
+is from <tt class="docutils literal">unittest.TestCase</tt> (but renamed as per Nose). Copy the module into your test folder or into
+the pytest package and change your test code's <tt class="docutils literal">from nose.tools import ...</tt> statements accordingly.</p>
+</li>
+<li><p class="first">Some Nose functions simply weren't on my radar; for example I just noticed for the first time that there
+is a <tt class="docutils literal">nose.tools.ok_()</tt> function which is the same as <tt class="docutils literal">assert_equal</tt>. Feel free to contribute via email
+or pull requests.</p>
+</li>
+</ol>
+<p>There are other limitations:</p>
+<ul>
+<li><p class="first">Nose functions that can be used as context managers can obviously not be converted to raw assertions.
+However, there is currently no way of preventing nose2pytest from converting Nose functions used this way.
+You will have to manually fix.</p>
+</li>
+<li><p class="first">The lib2to3 package that nose2pytest relies on assumes python 2.7 syntax as input. The only issue that
+this has caused so far on code base of 20k lines of python 3.4 <em>test</em> code (i.e. the source code does not
+matter, as none of the test code, such as import statements, is actually run) are keywords like <tt class="docutils literal">exec</tt>
+and <tt class="docutils literal">print</tt>, which in Python 2.x were statements, whereas they are functions in Python 3.x. This means
+that in Python 3.x, a method can be named <tt class="docutils literal">exec()</tt> or <tt class="docutils literal">print()</tt>, whereas this would lead to a syntax
+error in Python 2.7. Some libraries that do not support 2.x take advantage of this (like PyQt5). Any
+occurrence of these two keywords as methods in your test code will cause the script to fail converting
+anything.</p>
+<p>The work around is, luckily, simple: do a global search-replace of <tt class="docutils literal">\.exec\(</tt> for <tt class="docutils literal">.exec__(</tt> in your
+test folder, run nose2pytest, then reverse the search-replace (do a global search-replace of <tt class="docutils literal">\.exec__\(</tt>
+for <tt class="docutils literal">.exec(</tt>).</p>
+</li>
+<li><p class="first"><tt class="docutils literal">&#64;raises</tt>: this decorator can be replaced via the regular expression <tt class="docutils literal"><span class="pre">&#64;raises\((.*)\)</span></tt> to
+<tt class="docutils literal"><span class="pre">&#64;pytest.mark.xfail(raises=$1)</span></tt>,
+but I prefer instead to convert such decorated test functions to use <tt class="docutils literal">pytest.raises</tt> in the test function body.
+Indeed, it is easy to forget the decorator, and add code after the line that raises, but this code will never
+be run and you won't know. Using the <tt class="docutils literal"><span class="pre">pytest.raises(...)</span></tt> is better than <tt class="docutils literal"><span class="pre">xfail(raise=...)</span></tt>.</p>
+</li>
+<li><p class="first">Nose2pytest does not have a means of determining if an assertion function is inside a lambda expression, so
+the valid <tt class="docutils literal">lambda: assert_func(a, b)</tt> gets converted to the invalid <tt class="docutils literal">lambda: assert a operator b</tt>.
+These should be rare, are easy to spot (your IDE will flag the syntax error, or you will get an exception
+on import), and are easy to fix by changing from a lambda expression to a local function.</p>
+</li>
+</ul>
+<p>I have no doubt that more limitations will arise as nose2pytest gets used on more code bases. Contributions to
+address these and existing limitations are most welcome.</p>
+</div>
+<div class="section" id="other-tools">
+<h1><a class="toc-backref" href="#id7">Other tools</a></h1>
+<p>If your test suite is unittest- or unittest2-based, or your Nose tests also use some unittest/2 functionatlity
+(such as <tt class="docutils literal">setUp(self)</tt> method in test classes), then you might find the following useful:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/pytest-dev/unittest2pytest">https://github.com/pytest-dev/unittest2pytest</a></li>
+<li><a class="reference external" href="https://github.com/dropbox/unittest2pytest">https://github.com/dropbox/unittest2pytest</a></li>
+</ul>
+<p>I have used neither, so I can't make recommendations. However, if your Nose-based test suite uses both Nose/2 and
+unittest/2 functionality (such as <tt class="docutils literal">unittest.case.TestCase</tt> and/or <tt class="docutils literal"><span class="pre">setUp(self)/tearDown(self)</span></tt> methods), you
+should be able to run both a unittest2pytest converter, then the nose2pytest converter.</p>
+</div>
+<div class="section" id="solution-notes">
+<h1><a class="toc-backref" href="#id8">Solution Notes</a></h1>
+<p>I don't think this script would have been possible without lib2to3, certainly not with the same functionality since
+lib2to3, due to its purpose, preserves newlines, spaces and comments. The documentation for lib2to3 is very
+minimal, so I was lucky to find <a class="reference external" href="http://python3porting.com/fixers.html">http://python3porting.com/fixers.html</a>.</p>
+<p>Other than figuring out lib2to3 package so I could harness its
+capabilities, some aspects of code transformations still turned out to be tricky, as warned by Regobro in the
+last paragraph of his  <a class="reference external" href="http://python3porting.com/fixers.html">Extending 2to3</a> page.</p>
+<ul>
+<li><p class="first">Multi-line arguments: Python accepts multi-line expressions when they are surrounded by parentheses, brackets
+or braces, but not otherwise. For example converting</p>
+<pre class="literal-block">
+assert_func(long_a +
+             long_b, msg)
+</pre>
+<p>to</p>
+<pre class="literal-block">
+assert long_a +
+           long_b, msg
+</pre>
+<p>yields invalid Python code. However, converting to the following yields valid Python code:</p>
+<pre class="literal-block">
+assert (long_a +
+           long_b), msg
+</pre>
+<p>So nose2pytest checks each argument expression (such as <tt class="docutils literal">long_a +\n long_b</tt>) to see if it has
+newlines that would cause an invalid syntax, and if so, wraps them in parentheses. However, it is also important
+for readability of raw assertions that parentheses only be present if necessary. In other words,</p>
+<pre class="literal-block">
+assert_func((long_a +
+             long_b), msg)
+assert_func(z + (long_a +
+                 long_b), msg)
+</pre>
+<p>should convert to</p>
+<pre class="literal-block">
+assert (long_a +
+           long_b), msg
+assert z + (long_a +
+                 long_b), msg)
+</pre>
+<p>rather than</p>
+<pre class="literal-block">
+assert ((long_a +
+           long_b)), msg
+assert (z + (long_a +
+                 long_b)), msg)
+</pre>
+<p>So nose2pytest only tries to limit the addition of external parentheses to code that really needs it.</p>
+</li>
+<li><p class="first">Operator precedence: Python assigns a precedence to each operator; operators that are on the same level
+of precedence (like the comparison operators ==, &gt;=, !=, etc) are executed in sequence. This poses a problem
+for two-argument assertion functions. Example: translating <tt class="docutils literal">assert_equal(a != b, a &lt;= c)</tt> to
+<tt class="docutils literal">assert a != b == a &lt;= c</tt> is incorrect, it must be converted to <tt class="docutils literal">assert (a != b) == (a &lt;= c)</tt>. However
+wrapping every argument in parentheses all the time does not produce easy-to-read assertions:
+<tt class="docutils literal">assert_equal(a, b &lt; c)</tt> should convert to <tt class="docutils literal">assert a == (b &lt; c)</tt>, not <tt class="docutils literal">assert (a) == (b &lt; c)</tt>.</p>
+<p>So nose2pytest adds parentheses around its arguments if the operator used between the args has lower precedence
+than any operator found in the arg.  So <tt class="docutils literal">assert_equal(a, b + c)</tt> converts to assert <tt class="docutils literal">a == b + c</tt> whereas
+<tt class="docutils literal">assert_equal(a, b in c)</tt> converts to <tt class="docutils literal">assert a == (b in c)</tt> but <tt class="docutils literal">assert_in(a == b, c)</tt> converts to
+<tt class="docutils literal">assert a == b in c)</tt>.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="acknowledgements">
+<h1><a class="toc-backref" href="#id9">Acknowledgements</a></h1>
+<p>Thanks to (AFAICT) Lennart Regebro for having written <a class="reference external" href="http://python3porting.com/fixers.html#find-pattern">http://python3porting.com/fixers.html#find-pattern</a>, and
+to those who answered
+<a class="reference external" href="http://stackoverflow.com/questions/35169154/pattern-to-match-1-or-2-arg-function-call-for-lib2to3">my question on SO</a>
+and <a class="reference external" href="https://mail.python.org/pipermail/pytest-dev/2016-March/003497.html">my question on pytest-dev</a>.</p>
+</div>
+</div>
+</body>
+</html>
