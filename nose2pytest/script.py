@@ -14,7 +14,7 @@ code nodes back into Python source code. The following article was very useful:
 http://python3porting.com/fixers.html#find-pattern.
 """
 
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 import argparse
 import logging
