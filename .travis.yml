@@ -8,4 +8,4 @@ python:
 install:
   - pip install .
 
-script: pytest
+script: python -m pytest
