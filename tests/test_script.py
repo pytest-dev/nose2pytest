@@ -35,7 +35,7 @@ def setup_log():
 
 def check_transformation(input, expect):
     result = refac.refactor_string(dedent(input + '\n'), 'script')
-    assert str(result) == dedent(expect + '\n')
+    assert dedent(expect + '\n') == str(result)
 
 
 def check_passes(refac, statement_in, expect_out):
@@ -74,6 +74,9 @@ class Test1Arg:
 
     def test_parens(self):
         check_transformation('assert_true(a + \nb)', 'assert (a + \nb)')
+
+    def test_generator(self):
+        check_transformation('assert_true(x for x in range(1))', 'assert (x for x in range(1))')
 
     def test_same_results(self):
         check_passes(refac, 'assert_true(True)', 'assert True')

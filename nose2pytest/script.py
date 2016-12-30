@@ -25,7 +25,6 @@ from lib2to3.fixer_util import parenthesize
 
 __version__ = "1.0.6"
 
-
 log = logging.getLogger('nose2pytest')
 
 
@@ -53,10 +52,9 @@ def override(BaseClass):
 grammar = pygram.python_grammar
 driver = pgen2.driver.Driver(grammar, convert=pytree.convert, logger=log)
 
-
-PATTERN_ONE_ARG_OR_KWARG =   """power< 'func' trailer< '(' not(arglist) obj1=any                         ')' > >"""
-PATTERN_ONE_ARG =            """power< 'func' trailer< '(' not(arglist | argument<any '=' any>) obj1=any ')' > >"""
-PATTERN_ONE_KWARG =          """power< 'func' trailer< '(' obj1=argument< any '=' any >                  ')' > >"""
+PATTERN_ONE_ARG_OR_KWARG = """power< 'func' trailer< '(' not(arglist) obj1=any                         ')' > >"""
+PATTERN_ONE_ARG = """power< 'func' trailer< '(' not(arglist | argument<any '=' any>) obj1=any ')' > >"""
+PATTERN_ONE_KWARG = """power< 'func' trailer< '(' obj1=argument< any '=' any >                  ')' > >"""
 PATTERN_TWO_ARGS_OR_KWARGS = """power< 'func' trailer< '(' arglist< obj1=any ',' obj2=any >              ')' > >"""
 
 PATTERN_1_OR_2_ARGS = """
@@ -97,18 +95,21 @@ if sys.version_info.minor == 4:
     MEMBERSHIP_SYMBOLS = ((GRAM_SYM, 1, 'in'), (GRAM_SYM, 270, 'not in'))
     IDENTITY_SYMBOLS = ((GRAM_SYM, 1, 'is'), (GRAM_SYM, 270, 'is not'))
     BOOLEAN_OPS = ((302, 1, 'not'), (258, 1, 'and'), (305, 1, 'or'))
+    GENERATOR_TYPE = 260
 
 elif sys.version_info.minor == 5:
     GRAM_SYM = 273
     MEMBERSHIP_SYMBOLS = ((GRAM_SYM, 1, 'in'), (GRAM_SYM, 272, 'not in'))
     IDENTITY_SYMBOLS = ((GRAM_SYM, 1, 'is'), (GRAM_SYM, 272, 'is not'))
     BOOLEAN_OPS = ((304, 1, 'not'), (258, 1, 'and'), (307, 1, 'or'))
+    GENERATOR_TYPE = 260
 
 elif sys.version_info.minor == 6:
     GRAM_SYM = 274
     MEMBERSHIP_SYMBOLS = ((GRAM_SYM, 1, 'in'), (GRAM_SYM, 273, 'not in'))
     IDENTITY_SYMBOLS = ((GRAM_SYM, 1, 'is'), (GRAM_SYM, 273, 'is not'))
     BOOLEAN_OPS = ((305, 1, 'not'), (258, 1, 'and'), (308, 1, 'or'))
+    GENERATOR_TYPE = 261
 
 else:
     raise RuntimeError('nose2pytest must be run using Python in [3.4, 3.5, 3.6]')
@@ -211,7 +212,7 @@ def wrap_parens_for_comparison(arg_node: PyNode or PyLeaf) -> PyNode or PyLeaf:
     return wrap_parens(arg_node, has_weak_op_for_comparison)
 
 
-def has_weak_op_for_addsub(node: PyNode, check_comparison: bool=True) -> bool:
+def has_weak_op_for_addsub(node: PyNode, check_comparison: bool = True) -> bool:
     if check_comparison and has_weak_op_for_comparison(node):
         return True
 
@@ -307,7 +308,8 @@ class FixAssertBase(fixer_base.BaseFix):
             assert_arg_test_node = self._get_node(dest_tree, (0, 0, 1))
             if contains_newline(assert_arg_test_node):
                 prefixes = assert_arg_test_node.prefix.split('\n', 1)
-                assert_arg_test_node.prefix = '\n'+prefixes[1] if len(prefixes) > 1 else ''
+                assert_arg_test_node.prefix = '\n' + prefixes[1] if len(prefixes) > 1 else ''
+                # NOTE: parenthesize(node) needs an unparent node, so give it a clone:
                 new_node = parenthesize(assert_arg_test_node.clone())
                 new_node.prefix = prefixes[0] or ' '
                 assert_arg_test_node.replace(new_node)
@@ -394,6 +396,8 @@ class FixAssert1Arg(FixAssertBase):
     def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
         test = results["test"]
         test = test.clone()
+        if test.type == GENERATOR_TYPE:
+            test = parenthesize(test)
         test.prefix = " "
 
         # the destination node for 'a' is in conv_data:
@@ -547,7 +551,7 @@ class FixAssertAlmostEq(FixAssertBase):
 # ------------ Main portion of script -------------------------------
 
 class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
-    def __init__(self, verbose: bool=False):
+    def __init__(self, verbose: bool = False):
         flags = dict(print_function=True)
         super().__init__([], flags)
         level = logging.DEBUG if verbose else logging.INFO
@@ -593,7 +597,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 __license__ = """
     Copyright (c) 2016, Oliver Schoenborn
