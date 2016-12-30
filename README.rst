@@ -1,5 +1,7 @@
-Nose2pytest version 1.0.5 documentation
-=========================================
+.. image:: https://badge.fury.io/py/nose2pytest.svg
+    :target: https://badge.fury.io/py/nose2pytest
+.. image:: https://img.shields.io/travis/pytest-dev/nose2pytest.svg
+    :target: https://img.shields.io/travis/pytest-dev/nose2pytest
 
 
 .. contents::
@@ -160,16 +162,7 @@ gets converted to ::
               some-long-expression-b), msg
   assert (a == b) == (b == c), msg
 
-
-The script does not convert ``nose.tools.assert_`` import statements as there are too many possibilities. 
-Should ``from nose.tools import ...`` be changed to ``from pytest import ...``, and the implemented 
-conversions removed? Should an ``import pytest`` statement be added, and if so, where? If it is added after
-the line that had the ``nose.tools`` import, is the previous line really needed? Indeed the ``assert_``
-functions added in the ``pytest`` namespace could be accessed via ``pytest.assert_``, in which case the 
-script should prepend ``pytest.`` and remove the ``from nose.tools import ...`` entirely. Too many options, 
-and you can fairly easily handle this via a global regexp search/replace.
-
-Not every ``nose.tools.assert_*`` function is converted by nose2pytest: 
+Not every ``assert_*`` function from ``nose.tools`` is converted by nose2pytest: 
 
 1. Some Nose functions can be handled via a global search-replace, so a fixer was not a necessity: 
 
@@ -204,7 +197,34 @@ Not every ``nose.tools.assert_*`` function is converted by nose2pytest:
    is a ``nose.tools.ok_()`` function which is the same as ``assert_equal``. Feel free to contribute via email
    or pull requests. 
 
-There are other limitations: 
+
+Limitations
+------------
+
+- The script does not convert ``nose.tools.assert_`` import statements as there are too many possibilities. 
+  Should ``from nose.tools import ...`` be changed to ``from pytest import ...``, and the implemented 
+  conversions removed? Should an ``import pytest`` statement be added, and if so, where? If it is added after
+  the line that had the ``nose.tools`` import, is the previous line really needed? Indeed the ``assert_``
+  functions added in the ``pytest`` namespace could be accessed via ``pytest.assert_``, in which case the 
+  script should prepend ``pytest.`` and remove the ``from nose.tools import ...`` entirely. Too many options, 
+  and you can fairly easily handle this via a global regexp search/replace.
+
+- Similarly, statements of the form ``nose.tools.assert_`` are not converted: this would require some form 
+  of semantic analysis of each call to a function, because any of the following are possible::
+
+    import nose.tools as nt
+
+    nt.assert_true(...)
+
+    nt2 = nt
+    nt2.assert_true(...)
+    nt2.assert_true(...)
+
+    import bogo.assert_true
+    bogo.assert_true(...)  # should this one be converted? 
+  
+  The possiblities are endless so supporting this would require such a large amount of time that I 
+  do not have. As with other limitations in this section
 
 - Nose functions that can be used as context managers can obviously not be converted to raw assertions. 
   However, there is currently no way of preventing nose2pytest from converting Nose functions used this way. 
