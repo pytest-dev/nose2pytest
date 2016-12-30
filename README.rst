@@ -2,10 +2,6 @@
     :target: https://badge.fury.io/py/nose2pytest
 .. image:: https://img.shields.io/travis/pytest-dev/nose2pytest.svg
     :target: https://img.shields.io/travis/pytest-dev/nose2pytest
-    
-
-Nose2pytest version 1.0.6 documentation
-=========================================
 
 
 .. contents::
