@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
-        version='1.0.7',
+        version='1.0.8',
         packages=['nose2pytest'],
         # py_modules=['assert_tools', 'nose2pytest'],
         entry_points={
@@ -17,7 +17,7 @@ setup(
         author='Oliver Schoenborn',
         author_email='oliver.schoenborn@gmail.com',
         description='Convert nose.tools.assert_ calls found in your Nose test modules into raw asserts for pytest',
-        keywords='nose pytest conversion',
+        keywords='nose to pytest conversion',
 
         classifiers=[
             # How mature is this project? Common values are
