@@ -12,12 +12,16 @@ Overview
 
 This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based 
 tests. Specifically, the script transforms ``nose.tools.assert_*`` function calls into raw assert statements, 
-while preserving format of original arguments as much as possible. For example, the script ::
+while preserving format of original arguments as much as possible. For example, the script:
+
+.. code-block:: python
 
   assert_true(a, msg)
   assert_greater(a, b, msg)
   
-gets converted to ::
+gets converted to:
+
+.. code-block:: python
 
   assert a, msg
   assert a > b, msg
@@ -150,13 +154,17 @@ assert_not_almost_equals(a,b, delta[, msg])  assert abs(a - b) > delta[, msg]
 ============================================ =================================================================
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
-expression or involves newline. For example, ::
+expression or involves newline. For example:
+
+.. code-block:: python
 
   assert_true(some-long-expression-a in 
               some-long-expression-b, msg)
   assert_equal(a == b, b == c), msg
     
-gets converted to ::
+gets converted to:
+
+.. code-block:: python
 
   assert (some-long-expression-a in 
               some-long-expression-b), msg
@@ -210,7 +218,9 @@ Limitations
   and you can fairly easily handle this via a global regexp search/replace.
 
 - Similarly, statements of the form ``nose.tools.assert_`` are not converted: this would require some form 
-  of semantic analysis of each call to a function, because any of the following are possible::
+  of semantic analysis of each call to a function, because any of the following are possible:
+
+  .. code-block:: python
 
     import nose.tools as nt
 
@@ -284,38 +294,50 @@ capabilities, some aspects of code transformations still turned out to be tricky
 last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_ page. 
 
 - Multi-line arguments: Python accepts multi-line expressions when they are surrounded by parentheses, brackets 
-  or braces, but not otherwise. For example converting ::
+  or braces, but not otherwise. For example converting:
+  
+  .. code-block:: python
 
     assert_func(long_a +
                  long_b, msg)
 
-  to ::
+  to:
+  
+  .. code-block:: python
 
     assert long_a +
                long_b, msg
     
-  yields invalid Python code. However, converting to the following yields valid Python code::
+  yields invalid Python code. However, converting to the following yields valid Python code:
+  
+  .. code-block:: python
 
     assert (long_a +
                long_b), msg
 
   So nose2pytest checks each argument expression (such as ``long_a +\n long_b``) to see if it has 
   newlines that would cause an invalid syntax, and if so, wraps them in parentheses. However, it is also important
-  for readability of raw assertions that parentheses only be present if necessary. In other words, ::
+  for readability of raw assertions that parentheses only be present if necessary. In other words:
+
+  .. code-block:: python
 
     assert_func((long_a +
                  long_b), msg)
     assert_func(z + (long_a +
                      long_b), msg)
 
-  should convert to ::
+  should convert to:
+  
+  .. code-block:: python
 
     assert (long_a +
                long_b), msg
     assert z + (long_a +
                      long_b), msg)
     
-  rather than ::
+  rather than:
+  
+  .. code-block:: python
 
     assert ((long_a +
                long_b)), msg
