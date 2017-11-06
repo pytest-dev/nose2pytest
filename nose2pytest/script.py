@@ -507,8 +507,8 @@ class FixAssertAlmostEq(FixAssertBase):
     DEFAULT_ARG_PATHS = ((0, 1, 1, 0), (0, 1, 1, 2), 2)
 
     conversions = dict(
-        assert_almost_equal='abs(a - b) <= delta',
-        assert_almost_equals='abs(a - b) <= delta',
+        assert_almost_equal='a == pytest.approx(b, abs=delta)',
+        assert_almost_equals='a == pytest.approx(b, abs=delta)',
         assert_not_almost_equal='abs(a - b) > delta',
         assert_not_almost_equals='abs(a - b) > delta',
     )
