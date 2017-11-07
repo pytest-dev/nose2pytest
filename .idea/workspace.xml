@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list id="39e640d3-ce02-4df5-99d4-82a0f62ee0ae" name="ignore-on-commit" comment="" />
     <list default="true" id="c811ea49-0b35-40e0-a6b9-a306fb6d49b7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/nose2pytest.iml" afterPath="$PROJECT_DIR$/.idea/nose2pytest.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nose2pytest/script.py" afterPath="$PROJECT_DIR$/nose2pytest/script.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_script.py" afterPath="$PROJECT_DIR$/tests/test_script.py" />
     </list>
     <ignored path="pytest_from_nose.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -17,16 +17,24 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/pytest_from_nose$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1454907676824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args_test_not_almost_equal.coverage" NAME="py.test for test_script.Test3Args.test_not_almost_equal Coverage Results" MODIFIED="1509950276766" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_tests_test_script_top_level_collect.coverage" NAME="py.test for tests.test_script.top_level_collect Coverage Results" MODIFIED="1509946606906" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_test_script_py.coverage" NAME="py.test in test_script.py Coverage Results" MODIFIED="1509950293346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_Test2Args_and_test_add_parens.coverage" NAME="py.test in Test2Args and test_add_parens Coverage Results" MODIFIED="1483021306660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args_test_add_parens.coverage" NAME="py.test for test_script.Test3Args.test_add_parens Coverage Results" MODIFIED="1509949717051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_tests.coverage" NAME="py.test in tests Coverage Results" MODIFIED="1483021365273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_Test1Arg_and_test_generator.coverage" NAME="py.test in Test1Arg and test_generator Coverage Results" MODIFIED="1483131000051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/pytest_from_nose$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1454907676824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/pytest_from_nose$find_pattern.coverage" NAME="find_pattern Coverage Results" MODIFIED="1454907493535" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pytest_from_nose$convert_nose.coverage" NAME="convert_nose Coverage Results" MODIFIED="1454475615986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args.coverage" NAME="py.test for test_script.Test3Args Coverage Results" MODIFIED="1509947478679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/nose2pytest$scratch_22.coverage" NAME="scratch_22 Coverage Results" MODIFIED="1483128701684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args_test_almost_equal.coverage" NAME="py.test for test_script.Test3Args.test_almost_equal Coverage Results" MODIFIED="1509949723668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_TestMisc_and_test_fully_quald.coverage" NAME="py.test in TestMisc and test_fully_quald Coverage Results" MODIFIED="1483032090176" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_test_script_py.coverage" NAME="py.test in test_script.py Coverage Results" MODIFIED="1509941548369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/nose2pytest$py_test_in_Test2Args_and_test_add_parens.coverage" NAME="py.test in Test2Args and test_add_parens Coverage Results" MODIFIED="1483021306660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_tests_test_script_Test3Args_test_no_add_parens.coverage" NAME="py.test for tests.test_script.Test3Args.test_no_add_parens Coverage Results" MODIFIED="1509946145959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/nose2pytest$scratch_21.coverage" NAME="scratch_21 Coverage Results" MODIFIED="1483104734722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args_test_no_add_parens.coverage" NAME="py.test for test_script.Test3Args.test_no_add_parens Coverage Results" MODIFIED="1509949528697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/nose2pytest$py_test_for_test_script_Test3Args_test_ignore_places.coverage" NAME="py.test for test_script.Test3Args.test_ignore_places Coverage Results" MODIFIED="1509949749932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -39,56 +47,31 @@
       <file leaf-file-name="script.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nose2pytest/script.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1445">
-              <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="31" selection-end-line="92" selection-end-column="31" />
-              <folding>
-                <marker date="1483131757000" expanded="true" signature="1135:1144" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="1294:1303" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="4673:4680" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="5287:5306" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="6355:6362" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="6585:6592" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="7452:7469" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="8079:8104" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="8610:8627" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="9168:9175" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="9394:9424" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="9600:10436" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="10049:10051" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="10476:10488" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="11253:11269" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="12346:12362" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="12682:12703" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="13569:13585" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="15217:15233" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="16923:16939" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="18934:20856" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="19717:19733" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="21004:21312" ph="..." />
-                <marker date="1483131757000" expanded="true" signature="21036:21049" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/setup.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="35">
-              <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+            <state relative-caret-position="244">
+              <caret line="512" column="35" lean-forward="false" selection-start-line="512" selection-start-column="35" selection-end-line="512" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_script.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test_script.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_script.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2703">
-              <caret line="159" column="63" lean-forward="false" selection-start-line="159" selection-start-column="63" selection-end-line="159" selection-end-column="63" />
+            <state relative-caret-position="173">
+              <caret line="334" column="33" lean-forward="false" selection-start-line="334" selection-start-column="33" selection-end-line="334" selection-end-column="33" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tox.ini" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tox.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -128,9 +111,9 @@
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_19.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_21.py" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_22.py" />
-        <option value="$PROJECT_DIR$/tests/test_script.py" />
-        <option value="$PROJECT_DIR$/nose2pytest/script.py" />
         <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/nose2pytest/script.py" />
+        <option value="$PROJECT_DIR$/tests/test_script.py" />
       </list>
     </option>
   </component>
@@ -376,67 +359,7 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration name="py.test in Test1Arg and test_generator" type="tests" factoryName="py.test" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="nose2pytest" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="$PROJECT_DIR$/tests/test_script.py" />
-      <option name="keywords" value="Test1Arg and test_generator" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="true" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_legacyInformationCopiedToNew" value="true" />
-      <option name="_new_target" value="&quot;test_script.Test1Arg.test_generator&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-    </configuration>
-    <configuration name="py.test in test_script.py" type="tests" factoryName="py.test" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="C:\Python36\python.exe" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="nose2pytest" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="testToRun" value="$PROJECT_DIR$/tests/test_script.py" />
-      <option name="keywords" value="" />
-      <option name="params" value="" />
-      <option name="USE_PARAM" value="false" />
-      <option name="USE_KEYWORD" value="false" />
+    <configuration name="py.test for test_script.Test3Args.test_add_parens" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -445,66 +368,76 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nose2pytest" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_legacyInformationCopiedToNew" value="true" />
-      <option name="_new_target" value="&quot;test_script.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;test_script.Test3Args.test_add_parens&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
     </configuration>
-    <configuration name="scratch_19" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="py.test for test_script.Test3Args.test_almost_equal" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
+      <envs />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pytest_from_nose" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_19.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
-    <configuration name="scratch_20" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="pytest_from_nose" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_20.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
-    <configuration name="scratch_21" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="C:\Python34\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="nose2pytest" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_21.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_script.Test3Args.test_almost_equal&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+    </configuration>
+    <configuration name="py.test for test_script.Test3Args.test_ignore_places" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nose2pytest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_script.Test3Args.test_ignore_places&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+    </configuration>
+    <configuration name="py.test for test_script.Test3Args.test_not_almost_equal" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nose2pytest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_script.Test3Args.test_not_almost_equal&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+    </configuration>
+    <configuration name="py.test in test_script.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="nose2pytest" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_script.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
     </configuration>
     <configuration name="scratch_22" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -526,19 +459,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python.scratch_22" />
-      <item index="1" class="java.lang.String" itemvalue="Python.scratch_19" />
-      <item index="2" class="java.lang.String" itemvalue="Python.scratch_20" />
-      <item index="3" class="java.lang.String" itemvalue="Python.scratch_21" />
-      <item index="4" class="java.lang.String" itemvalue="Python tests.py.test in Test1Arg and test_generator" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_almost_equal" />
+      <item index="2" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_add_parens" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_not_almost_equal" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_ignore_places" />
       <item index="5" class="java.lang.String" itemvalue="Python tests.py.test in test_script.py" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python tests.py.test in test_script.py" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.py.test in Test1Arg and test_generator" />
-        <item index="2" class="java.lang.String" itemvalue="Python.scratch_21" />
-        <item index="3" class="java.lang.String" itemvalue="Python.scratch_20" />
-        <item index="4" class="java.lang.String" itemvalue="Python.scratch_19" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_not_almost_equal" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_ignore_places" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_almost_equal" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.py.test for test_script.Test3Args.test_add_parens" />
       </list>
     </recent_temporary>
   </component>
@@ -625,50 +558,49 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 42m 52s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_add_parens - 2017.11.06 at 01h 27m 41s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_add_parens" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 46m 58s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_add_parens - 2017.11.06 at 01h 28m 05s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_add_parens" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 53m 37s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_add_parens - 2017.11.06 at 01h 28m 39s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_add_parens" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 54m 05s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_almost_equal - 2017.11.06 at 01h 28m 46s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_almost_equal" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 56m 44s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_ignore_places - 2017.11.06 at 01h 29m 12s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_ignore_places" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 15h 56m 58s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_not_almost_equal - 2017.11.06 at 01h 28m 55s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_not_almost_equal" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2016.12.30 at 16h 02m 47s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_not_almost_equal - 2017.11.06 at 01h 31m 22s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_not_almost_equal" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2017.11.05 at 23h 05m 36s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_not_almost_equal - 2017.11.06 at 01h 35m 47s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_not_almost_equal" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2017.11.05 at 23h 09m 43s.xml">
-      <configuration name="py.test in test_script.py" configurationId="tests" />
+    <history-entry file="py_test_for_test_script_Test3Args_test_not_almost_equal - 2017.11.06 at 01h 37m 59s.xml">
+      <configuration name="py.test for test_script.Test3Args.test_not_almost_equal" configurationId="tests" />
     </history-entry>
-    <history-entry file="py_test_in_test_script_py - 2017.11.05 at 23h 12m 31s.xml">
+    <history-entry file="py_test_in_test_script_py - 2017.11.06 at 01h 38m 15s.xml">
       <configuration name="py.test in test_script.py" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="215" y="74" width="1478" height="991" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2257182" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23272215" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39954337" sideWeight="0.50247" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33527356" sideWeight="0.5070522" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35034013" sideWeight="0.49752998" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3492433" sideWeight="0.49506348" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32776934" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32697946" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33527356" sideWeight="0.49294782" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39909297" sideWeight="0.49752998" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -710,18 +642,6 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <dependency id="0" />
-          <url>file://$PROJECT_DIR$/tests/test_script.py</url>
-          <line>150</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <dependency id="0" />
-          <url>file://$PROJECT_DIR$/tests/test_script.py</url>
-          <line>139</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch_21.py</url>
           <line>71</line>
           <option name="timeStamp" value="15" />
@@ -732,15 +652,25 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_script.py</url>
-          <line>7</line>
-          <option name="timeStamp" value="22" />
+          <url>file://$PROJECT_DIR$/nose2pytest/script.py</url>
+          <line>539</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/nose2pytest/script.py</url>
+          <line>535</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://C:/Python35/Lib/lib2to3/refactor.py</url>
+          <line>501</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="23" />
+      <option name="time" value="34" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -749,31 +679,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_21.py" />
-    <entry file="file://$PROJECT_DIR$/tests/test_script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="64" column="34" lean-forward="false" selection-start-line="64" selection-start-column="23" selection-end-line="64" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python34/Lib/lib2to3/fixes/fix_intern.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="36" lean-forward="false" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python34/Lib/lib2to3/fixes/fix_reduce.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_script.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -970,13 +875,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tox.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python34/Lib/lib2to3/fixes/fix_reduce.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -1025,39 +923,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nose2pytest/script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1445">
-          <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="31" selection-end-line="92" selection-end-column="31" />
-          <folding>
-            <marker date="1483131757000" expanded="true" signature="1135:1144" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="1294:1303" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="4673:4680" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="5287:5306" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="6355:6362" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="6585:6592" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="7452:7469" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="8079:8104" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="8610:8627" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="9168:9175" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="9394:9424" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="9600:10436" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="10049:10051" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="10476:10488" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="11253:11269" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="12346:12362" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="12682:12703" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="13569:13585" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="15217:15233" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="16923:16939" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="18934:20856" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="19717:19733" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="21004:21312" ph="..." />
-            <marker date="1483131757000" expanded="true" signature="21036:21049" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="35">
@@ -1066,13 +931,61 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/Python35/Lib/site-packages/_pytest/runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="66" column="0" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python35/Lib/site-packages/_pytest/python.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="148" column="0" lean-forward="false" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python35/Lib/site-packages/_pytest/vendored_packages/pluggy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="265" column="41" lean-forward="true" selection-start-line="265" selection-start-column="27" selection-end-line="265" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python35/Lib/lib2to3/refactor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="479" column="0" lean-forward="false" selection-start-line="479" selection-start-column="0" selection-end-line="479" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nose2pytest/script.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="512" column="35" lean-forward="false" selection-start-line="512" selection-start-column="35" selection-end-line="512" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_script.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2703">
-          <caret line="159" column="63" lean-forward="false" selection-start-line="159" selection-start-column="63" selection-end-line="159" selection-end-column="63" />
+        <state relative-caret-position="173">
+          <caret line="334" column="33" lean-forward="false" selection-start-line="334" selection-start-column="33" selection-end-line="334" selection-end-column="33" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tox.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -504,13 +504,13 @@ class FixAssertAlmostEq(FixAssertBase):
 
     # The args node paths are the same for every assert function: the first tuple is for
     # arg a, the second for arg b, the third for arg c (delta).
-    DEFAULT_ARG_PATHS = ((0, 1, 1, 0), (0, 1, 1, 2), 2)
+    DEFAULT_ARG_PATHS = (0, (2, 2, 1, 0), (2, 2, 1, 2, 2))
 
     conversions = dict(
         assert_almost_equal='a == pytest.approx(b, abs=delta)',
         assert_almost_equals='a == pytest.approx(b, abs=delta)',
-        assert_not_almost_equal='abs(a - b) > delta',
-        assert_not_almost_equals='abs(a - b) > delta',
+        assert_not_almost_equal='a != pytest.approx(b, abs=delta)',
+        assert_not_almost_equals='a != pytest.approx(b, abs=delta)',
     )
 
     @override(FixAssertBase)
@@ -528,17 +528,21 @@ class FixAssertAlmostEq(FixAssertBase):
         adjust_prefix_first_arg(new_aaa, results["aaa"].prefix)
 
         dest2 = self._get_node(assert_arg_test_node, self._arg_paths[1])
-        dest2.replace(wrap_parens_for_addsub(bbb))
+        new_bbb = wrap_parens_for_addsub(bbb)
+        if get_prev_sibling(dest2).type in NEWLINE_OK_TOKENS:
+            new_bbb.prefix = ''
+        dest2.replace(new_bbb)
 
         dest3 = self._get_node(assert_arg_test_node, self._arg_paths[2])
         if delta.children[0] == PyLeaf(token.NAME, 'delta'):
             delta_val = delta.children[2]
-            delta_val.prefix = " "
-            dest3.replace(wrap_parens_for_comparison(delta_val))
+            delta_val.prefix = ""
+            wrapped_delta_val = wrap_parens_for_comparison(delta_val)
+            dest3.replace(wrapped_delta_val)
 
         elif delta.children[0] == PyLeaf(token.NAME, 'msg'):
             delta_val = results['msg'].children[2]
-            delta_val.prefix = " "
+            delta_val.prefix = ""
             dest3.replace(wrap_parens_for_comparison(delta_val))
             results['msg'] = delta
 

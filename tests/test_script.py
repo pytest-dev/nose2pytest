@@ -31,6 +31,7 @@ def setup_log():
     import re, collections
     pytesttools['re'] = re
     pytesttools['collections'] = collections
+    pytesttools['pytest'] = pytest
 
 
 def check_transformation(input, expect):
@@ -279,43 +280,72 @@ class Test2Args:
 class Test3Args:
 
     def test_no_add_parens(self):
-        check_transformation('assert_almost_equal(a * b, ~c, delta=d**e)', 'assert abs(a * b - ~c) <= d**e')
+        check_transformation('assert_almost_equal(a * b, ~c, delta=d**e)',
+                             'assert a * b == pytest.approx(~c, abs=d**e)')
 
     def test_add_parens(self):
-        check_transformation('assert_almost_equal(a + b, c, delta=d>e)', 'assert abs((a + b) - c) <= (d>e)')
-        check_transformation('assert_almost_equal(a | b, c ^ d, delta=0.1)', 'assert abs((a | b) - (c ^ d)) <= 0.1')
-        check_transformation('assert_almost_equal(a & b, c << d, delta=0.1)', 'assert abs((a & b) - (c << d)) <= 0.1')
-        check_transformation('assert_almost_equal(a or b, c >> d, delta=0.1)', 'assert abs((a or b) - (c >> d)) <= 0.1')
+        check_transformation('assert_almost_equal(a + b, c, delta=d>e)',
+                             'assert (a + b) == pytest.approx(c, abs=(d>e))')
+        check_transformation('assert_almost_equal(a | b, c ^ d, delta=0.1)',
+                             'assert (a | b) == pytest.approx((c ^ d), abs=0.1)')
+        check_transformation('assert_almost_equal(a & b, c << d, delta=0.1)',
+                             'assert (a & b) == pytest.approx((c << d), abs=0.1)')
+        check_transformation('assert_almost_equal(a or b, c >> d, delta=0.1)',
+                             'assert (a or b) == pytest.approx((c >> d), abs=0.1)')
 
     def test_almost_equal(self):
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)',
-                     'assert 123.456 == python.approx(123.5, abs=0.1)')
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")',
+        check_passes(refac,
+                     'assert_almost_equal(123.456, 123.5, delta=0.1)',
+                     'assert 123.456 == pytest.approx(123.5, abs=0.1)')
+        check_passes(refac,
+                     'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")',
                      'assert 123.456 == pytest.approx(123.5, abs=0.2), "text"')
-        check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)',
+        check_passes(refac,
+                     'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)',
                      'assert 123.456 == pytest.approx(123.5, abs=0.3), "text"')
-        check_fails(refac,  'assert_almost_equal(123.456, 124, delta=0.1)',
+        check_fails(refac,
+                    'assert_almost_equal(123.456, 124, delta=0.1)',
                     'assert 123.456 == pytest.approx(124, abs=0.1)')
 
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.1)',
+        check_passes(refac,
+                     'assert_almost_equals(123.456, 123.5, delta=0.1)',
                      'assert 123.456 == pytest.approx(123.5, abs=0.1)')
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")',
+        check_passes(refac,
+                     'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")',
                      'assert 123.456 == pytest.approx(123.5, abs=0.2), "text"')
-        check_passes(refac, 'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)',
+        check_passes(refac,
+                     'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)',
                      'assert 123.456 == pytest.approx(123.5, abs=0.3), "text"')
-        check_fails(refac, 'assert_almost_equals(123.456, 124, delta=0.1)',
+        check_fails(refac,
+                    'assert_almost_equals(123.456, 124, delta=0.1)',
                     'assert 123.456 == pytest.approx(124, abs=0.1)')
 
     def test_not_almost_equal(self):
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.01)', 'assert abs(123.456 - 123.5) > 0.01')
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, delta=0.02, msg="text")', 'assert abs(123.456 - 123.5) > 0.02, "text"')
-        check_passes(refac, 'assert_not_almost_equal(123.456, 123.5, msg="text", delta=0.03)', 'assert abs(123.456 - 123.5) > 0.03, "text"')
-        check_fails(refac,  'assert_not_almost_equal(123.456, 124, delta=0.6)', 'assert abs(123.456 - 124) > 0.6')
+        check_passes(refac,
+                     'assert_not_almost_equal(123.456, 123.5, delta=0.01)',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.01)')
+        check_passes(refac,
+                     'assert_not_almost_equal(123.456, 123.5, delta=0.02, msg="text")',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.02), "text"')
+        check_passes(refac,
+                     'assert_not_almost_equal(123.456, 123.5, msg="text", delta=0.03)',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.03), "text"')
+        check_fails(refac,
+                    'assert_not_almost_equal(123.456, 124, delta=0.6)',
+                    'assert 123.456 != pytest.approx(124, abs=0.6)')
 
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.01)', 'assert abs(123.456 - 123.5) > 0.01')
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")', 'assert abs(123.456 - 123.5) > 0.02, "text"')
-        check_passes(refac, 'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)', 'assert abs(123.456 - 123.5) > 0.03, "text"')
-        check_fails(refac,  'assert_not_almost_equals(123.456, 124, delta=0.6)', 'assert abs(123.456 - 124) > 0.6')
+        check_passes(refac,
+                     'assert_not_almost_equals(123.456, 123.5, delta=0.01)',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.01)')
+        check_passes(refac,
+                     'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.02), "text"')
+        check_passes(refac,
+                     'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)',
+                     'assert 123.456 != pytest.approx(123.5, abs=0.03), "text"')
+        check_fails(refac,
+                    'assert_not_almost_equals(123.456, 124, delta=0.6)',
+                    'assert 123.456 != pytest.approx(124, abs=0.6)')
 
     def test_ignore_places(self):
         statement_in = 'assert_almost_equal(123.456, 123.5, 2)'
