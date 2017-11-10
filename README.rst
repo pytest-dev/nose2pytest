@@ -8,7 +8,7 @@
 
 
 Overview
-------------
+-------------
 
 This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based 
 tests. Specifically, the script transforms ``nose.tools.assert_*`` function calls into raw assert statements, 
