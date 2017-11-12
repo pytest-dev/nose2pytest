@@ -359,6 +359,72 @@ last paragraph of his  `Extending 2to3 <http://python3porting.com/fixers.html>`_
   ``assert a == b in c)``.
   
 
+Contributing
+------------
+
+Patches and extensions are welcome. Please fork, branch, then submit PR. Nose2pytest uses `lib2to3.pytree`,
+in particular the Leaf and Node classes. There are a few particularly challenging aspects to transforming
+nose test expressions to equivalent pytest expressions:
+
+#. Finding expressions that match a pattern: If the code you want to transform does not already match one
+   of the uses cases in script.py, you will have to determine the lib2to3 pattern expression
+   that describes it (this is similar to regular expressions, but for AST representation of code,
+   instead of text strings). Various expression patterns already exist near the top of
+   nose2pytest/script.py. This is largely trial and error as there is (as of this writing) no good
+   documentation.
+#. Inserting the sub-expressions extracted by lib2to3 in step 1 into the target "expression template". For
+   example to convert `assert_none(a)` to `assert a is None`, the `a` sub-expression extracted via the lib2to3
+   pattern must be inserted into the correct "placeholder" node of the target expression. If step 1 was
+   necessary, then step 2 like involves creating a new class that derives from `FixAssertBase`.
+#. Parentheses and priority of operators: sometimes, it is necessary to add parentheses around an extracted
+   subexpression to protect it against higher-priority operators. For example, in `assert_none(a)` the `a`
+   could be an arbitrary Python expression, such as `var1 and var2`. The meaning of `assert_none(var1 and var2)`
+   is not the same as `assert var1 and var2 is None`; parentheses must be added i.e. the target expression
+   must be `assert (var1 and var2) is None`. Whether this is necessary depends on the transformation. The
+   `wrap_parens_*` functions provide examples of how and when to do this.
+#. Spacing: white space and newlines in code must be preserved as much as possible, and removed
+   when unnecessary. For example, `assert_equal(a, b)` convers to `assert a == b`; the latter already has a
+   a space before the b, but so does the original; the `lib2to3.pytree` captures such 'non-code' information
+   so that generating Python code from a Node yields the same as the input if no transformations were applied.
+   This is done via the `Node.prefix` property.
+
+When the pattern is correctly defined in step 1, adding a test in tests/test_script.py for a string that
+contains Python code that matches it will cause the `FixAssertBase.transform(node, results)` to be called,
+with `node` being the Node for which the children match the defined pattern. The `results` is map of object
+names defined in the pattern, to the Node subtree representing the sub-expression matched. For example,
+a pattern for `assert_none(a)` (where `a` could be any sub-expression such as `1+2` or `sqrt(5)` or
+`var1+var2`) will cause `results` to contain the sub-expression that `a` represents. The objective of
+`transform()` is then to put the extracted results at the correct location into a new Node tree that
+represents the target (transformed) expression.
+
+Nodes form a tree, each Node has a `children` property, containing 0 or more Node and/or Leaf. For example,
+if `node` represents `assert a/2 == b`, then the tree might be something like this::
+
+  node (Node)
+      assert (Leaf)
+      node (node)
+          node (node)
+              a (Leaf)
+              / (Leaf)
+              2 (Leaf)
+          ==  (Leaf)
+          b (Leaf)
+
+Sometimes you may be able to guess what the tree is for a given expression, however most often it is best to use
+a debugger to run a test that attempts to transform your expression of interest (there are several examples of
+how to do this in tests/test_script.py), break at the beginning of the `FixAssertBase.transform()` method, and
+explore the `node.children` tree to find the subexpressions that you need to extract. In the above example,
+the `assert` leaf node is child at index 0 of `node.children`, whereas child 1 is another Node; the `a` leaf
+is child 0 of child 0 of child 1 of `node.children`, i.e. it is `node.children[0].children[0].children[1]`.
+Therefore the "path" from `node` to reach 'a' is (0, 0, 1).
+
+The main challenge for this step of nose2test extension is then to find the paths to reach the desired
+"placeholder" objects in the target expression. For example if `assert_almost_equal(a, b, delta=value)`
+must be converted to `assert a == pytest.approx(b, delta=value)`, then the nodes of interest are a, b, and
+delta, and their paths are 0, (2, 2, 1, 0) and (2, 2, 1, 2, 2) respectively (when a path contains only
+1 item, there is no need to use a tuple).
+
+
 Acknowledgements
 ----------------
 
