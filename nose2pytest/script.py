@@ -540,6 +540,12 @@ class FixAssertAlmostEq(FixAssertBase):
             wrapped_delta_val = wrap_parens_for_comparison(delta_val)
             dest3.replace(wrapped_delta_val)
 
+        elif delta.children[0] == PyLeaf(token.NAME, 'places'):
+            delta_val = delta.children[2]
+            delta_val.prefix = "1e-"
+            wrapped_delta_val = wrap_parens_for_comparison(delta_val)
+            dest3.replace(wrapped_delta_val)
+
         elif delta.children[0] == PyLeaf(token.NAME, 'msg'):
             delta_val = results['msg'].children[2]
             delta_val.prefix = ""
@@ -573,7 +579,6 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
 
         return pre_fixers, post_fixers
 
-
 def setup():
     # from nose import tools as nosetools
     # import inspect
@@ -589,6 +594,8 @@ def setup():
                         help='disable overwriting of original files')
     parser.add_argument('-v', dest='verbose', action='store_true',
                         help='verbose output (list files changed, etc)')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {0}'.format(__version__))
 
     return parser.parse_args()
 

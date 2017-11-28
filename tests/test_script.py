@@ -347,13 +347,14 @@ class Test3Args:
                     'assert_not_almost_equals(123.456, 124, delta=0.6)',
                     'assert 123.456 != pytest.approx(124, abs=0.6)')
 
-    def test_ignore_places(self):
-        statement_in = 'assert_almost_equal(123.456, 123.5, 2)'
-        check_transformation(statement_in, statement_in)
-
-        statement_in = 'assert_almost_equal(123.456, 123.5, places=2)'
-        check_transformation(statement_in, statement_in)
-
+    def test_places(self):
+        check_transformation('assert_almost_equal(123.456, 124, places=1)',
+                             'assert 123.456 == pytest.approx(124, abs=1e-1)')
+        check_transformation('assert_almost_equal(123.456, 124, places=7)',
+                             'assert 123.456 == pytest.approx(124, abs=1e-7)')
+        check_passes(refac,
+                     'assert_almost_equal(123.456, 123.450, places=1)',
+                     'assert 123.456 == pytest.approx(123.450, abs=1e-1)')
 
 class TestAssertTools:
 
