@@ -97,9 +97,14 @@ del _t
 
 # Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
 
+
+def _supported_nose_name(name):
+    return name.startswith('assert_') or name in ('ok_', 'eq_')
+
+
 def pytest_configure():
     for name, obj in globals().items():
-        if name.startswith('assert_'):
+        if _supported_nose_name(name):
             setattr(pytest, name, obj)
 
 

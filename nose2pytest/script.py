@@ -387,6 +387,7 @@ class FixAssert1Arg(FixAssertBase):
     # the 'a' is its children[1] so self._arg_paths needs to be 1.
     conversions = dict(
         assert_true=('a', None),
+        ok_=('a', None),
         assert_false=('not a', 1),
         assert_is_none=('a is None', 0),
         assert_is_not_none=('a is not None', 0),
@@ -470,6 +471,7 @@ class FixAssertBinOp(FixAssert2Args):
 
     conversions = dict(
         assert_equal='a == b',
+        eq_='a == b',
         assert_equals='a == b',
         assert_not_equal='a != b',
         assert_not_equals='a != b',
