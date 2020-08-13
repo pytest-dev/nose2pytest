@@ -10,6 +10,7 @@ introspection for error reporting.  When combined with running nose2pytest.py on
 module may be sufficient to decrease your test suite's third-party dependencies by 1.
 """
 
+import pytest
 import unittest
 
 
@@ -96,13 +97,10 @@ del _t
 
 # Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
 
-def pytest_namespace() -> {str: callable}:
-    namespace = {}
+def pytest_configure():
     for name, obj in globals().items():
         if name.startswith('assert_'):
-            namespace[name] = obj
-
-    return namespace
+            setattr(pytest, name, obj)
 
 
 # licensing

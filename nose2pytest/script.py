@@ -104,7 +104,7 @@ elif sys.version_info.minor == 5:
     BOOLEAN_OPS = ((304, 1, 'not'), (258, 1, 'and'), (307, 1, 'or'))
     GENERATOR_TYPE = 260
 
-elif sys.version_info.minor == 6:
+elif sys.version_info.minor in [6, 7, 8]:
     GRAM_SYM = 274
     MEMBERSHIP_SYMBOLS = ((GRAM_SYM, 1, 'in'), (GRAM_SYM, 273, 'not in'))
     IDENTITY_SYMBOLS = ((GRAM_SYM, 1, 'is'), (GRAM_SYM, 273, 'is not'))
@@ -112,7 +112,7 @@ elif sys.version_info.minor == 6:
     GENERATOR_TYPE = 261
 
 else:
-    raise RuntimeError('nose2pytest must be run using Python in [3.4, 3.5, 3.6]')
+    raise RuntimeError('nose2pytest must be run using Python in [3.4, 3.5, 3.6, 3.7, 3.8]')
 
 # these operators require parens around function arg if binop is + or -
 ADD_SUB_GROUP_TOKENS = (
