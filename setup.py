@@ -18,7 +18,9 @@ setup(
         author_email='oliver.schoenborn@gmail.com',
         description='Convert nose.tools.assert_ calls found in your Nose test modules into raw asserts for pytest',
         keywords='nose to pytest conversion',
-
+        install_requires=[
+            'fissix',
+        ],
         classifiers=[
             # How mature is this project? Common values are
             #   3 - Alpha
