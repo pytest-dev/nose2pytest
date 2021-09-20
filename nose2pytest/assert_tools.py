@@ -5,7 +5,7 @@ This module is part of the nose2pytest distribution.
 
 This module's assert_ functions provide drop-in replacements for nose.tools.assert_ functions (many of which are
 pep-8-ized extractions from Python's unittest.case.TestCase methods). As such, it can be imported in a test
-suite run by py.test, to replace the nose imports with functions that rely on py.test's assertion
+suite run by pytest, to replace the nose imports with functions that rely on pytest's assertion
 introspection for error reporting.  When combined with running nose2pytest.py on your test suite, this
 module may be sufficient to decrease your test suite's third-party dependencies by 1.
 """
@@ -93,7 +93,7 @@ del _Dummy
 del _t
 
 
-# py.test integration: add all assert_ function to the pytest package namespace
+# pytest integration: add all assert_ function to the pytest package namespace
 
 # Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
 

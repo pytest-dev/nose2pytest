@@ -357,7 +357,7 @@ ul.auto-toc {
 </div>
 <div class="section" id="overview">
 <h1><a class="toc-backref" href="#id1">Overview</a></h1>
-<p>This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based
+<p>This package provides a Python script and pytest plugin to help convert Nose-based tests into pytest-based
 tests. Specifically, the script transforms <tt class="docutils literal">nose.tools.assert_*</tt> function calls into raw assert statements,
 while preserving format of original arguments as much as possible. For example, the script</p>
 <pre class="literal-block">
@@ -371,7 +371,7 @@ assert a &gt; b, msg
 </pre>
 <p>A small subset of <tt class="docutils literal">nose.tools.assert_*</tt> function calls are not
 transformed because there is no raw assert statement equivalent, or the equivalent would be hard to
-maintain. They are provided as functions in the pytest namespace via py.test's plugin system.</p>
+maintain. They are provided as functions in the pytest namespace via pytest's plugin system.</p>
 </div>
 <div class="section" id="installation">
 <h1><a class="toc-backref" href="#id2">Installation</a></h1>
@@ -399,15 +399,15 @@ ought to use the <tt class="docutils literal"><span class="pre">assert_*()</span
 are not as convenient to use as raw assertions, since you have to decide before hand what type of assertion you
 are going to write: an identity comparison to None, a truth check, a falseness check, an identity comparison to another
 object, etc. Just being able to write a raw assertion, and still get good diagnostics on failure as done by
-py.test, is really nice. This is a main reason for using py.test for me. Another reason is the design of fixtures
-in py.test.</p>
-<p>Switching an existing test suite from Nose to py.test is feasible even without nose2pytest, as it requires
+pytest, is really nice. This is a main reason for using pytest for me. Another reason is the design of fixtures
+in pytest.</p>
+<p>Switching an existing test suite from Nose to pytest is feasible even without nose2pytest, as it requires
 relatively little work: <em>relatively</em> as in, you will probably only need a few modifications, all achievable
 manually, to get the same test coverage and results. A few gotchas:</p>
 <ul class="simple">
 <li>test classes that have <tt class="docutils literal">__init__</tt> will be ignored, those will have to be moved (usually, into class's
 <tt class="docutils literal">setup_class()</tt>)</li>
-<li>the <tt class="docutils literal">setup.cfg</tt> may have to be edited since test discovery rules are slightly more strict with py.test</li>
+<li>the <tt class="docutils literal">setup.cfg</tt> may have to be edited since test discovery rules are slightly more strict with pytest</li>
 <li>the order of tests may be different, but in general that should not matter</li>
 <li>all test modules are imported up-front, so some test modules may need adjustment such as moving some
 code from the top of the test module into its <tt class="docutils literal">setup_module()</tt></li>
@@ -415,13 +415,13 @@ code from the top of the test module into its <tt class="docutils literal">setup
 <p>Once the above has been done to an existing code base, you don't really have to do anything else. However, your test
 suite now has an additional third-party test dependency (Nose), just because of those <tt class="docutils literal">assert_*</tt> functions used all
 over the place. Moreover, there is no longer one obvious way to do things in your test suite: existing test code
-uses <tt class="docutils literal">nose.tools.assert_*</tt> functions, yet with py.test you can use raw assertions. If you add tests, which of
+uses <tt class="docutils literal">nose.tools.assert_*</tt> functions, yet with pytest you can use raw assertions. If you add tests, which of
 these two approaches should a developer use? If you modify existing tests, should new assertions use raw assert?
 Should the remaining test method, test class, or test module be updated? A test module can contain hundreds of
 calls to <tt class="docutils literal">nose.tools.assert_*</tt> functions, is a developer to manually go through each one to convert it? Painful and
 error prone, in general not feasible to do manually.</p>
-<p>This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to py.test,
-but also have only py.test as a dependency, and have one obvious way to write assertions in the test suite.</p>
+<p>This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to pytest,
+but also have only pytest as a dependency, and have one obvious way to write assertions in the test suite.</p>
 </div>
 <div class="section" id="requirements">
 <h1><a class="toc-backref" href="#id5">Requirements</a></h1>
@@ -433,7 +433,7 @@ Nose2 test driver.</p>
 Nose 1.3.7 on Windows 7 Pro 64. If you have successfully used nose2pytest with other combinations, please
 kindly let me know (via github).</p>
 <p>The pytest package namespace will be extended with <tt class="docutils literal">assert_</tt> functions that are not converted by the script
-only if, err, you have py.test installed!</p>
+only if, err, you have pytest installed!</p>
 </div>
 <div class="section" id="status">
 <h1><a class="toc-backref" href="#id6">Status</a></h1>
@@ -583,7 +583,7 @@ and you can fairly easily handle this via a global regexp search/replace.</p>
 </ul>
 <p>The nose2pytest distribution contains a module, <tt class="docutils literal">assert_tools.py</tt> which defines these utility functions to
 contain the equivalent raw assert statement. Copy the module into your test folder or into the pytest package
-and change your test code's <tt class="docutils literal">from nose.tools import ...</tt> statements accordingly. Py.test introspection will
+and change your test code's <tt class="docutils literal">from nose.tools import ...</tt> statements accordingly. pytest introspection will
 provide error information on assertion failure.</p>
 </li>
 <li><p class="first">Some Nose functions don't have a one-line assert statement equivalent, they have to remain utility functions:</p>
