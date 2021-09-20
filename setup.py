@@ -19,6 +19,7 @@ setup(
         description='Convert nose.tools.assert_ calls found in your Nose test modules into raw asserts for pytest',
         keywords='nose to pytest conversion',
 
+        python_requires='>=3.5',
         classifiers=[
             # How mature is this project? Common values are
             #   3 - Alpha
@@ -36,7 +37,6 @@ setup(
             # Specify the Python versions you support here.
             'Programming Language :: Python :: 3',
             'Programming Language :: Python :: 3 :: Only',
-            'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
