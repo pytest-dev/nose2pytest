@@ -1,7 +1,7 @@
 .. image:: https://badge.fury.io/py/nose2pytest.svg
     :target: https://badge.fury.io/py/nose2pytest
-.. image:: https://img.shields.io/travis/pytest-dev/nose2pytest.svg
-    :target: https://img.shields.io/travis/pytest-dev/nose2pytest
+.. image:: https://github.com/pytest-dev/nose2pytest/workflows/Test/badge.svg
+    :target: https://github.com/pytest-dev/nose2pytest/actions
 
 
 .. contents::
@@ -10,7 +10,7 @@
 Overview
 ------------
 
-This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based 
+This package provides a Python script and pytest plugin to help convert Nose-based tests into pytest-based
 tests. Specifically, the script transforms ``nose.tools.assert_*`` function calls into raw assert statements, 
 while preserving format of original arguments as much as possible. For example, the script:
 
@@ -28,7 +28,7 @@ gets converted to:
 
 A small subset of ``nose.tools.assert_*`` function calls are not 
 transformed because there is no raw assert statement equivalent, or the equivalent would be hard to 
-maintain. They are provided as functions in the pytest namespace via py.test's plugin system.
+maintain. They are provided as functions in the pytest namespace via pytest's plugin system.
 
 
 Installation
@@ -62,16 +62,16 @@ ought to use the ``assert_*()`` functions from ``nose.tools``. Although they pro
 are not as convenient to use as raw assertions, since you have to decide before hand what type of assertion you 
 are going to write: an identity comparison to None, a truth check, a falseness check, an identity comparison to another 
 object, etc. Just being able to write a raw assertion, and still get good diagnostics on failure as done by 
-py.test, is really nice. This is a main reason for using py.test for me. Another reason is the design of fixtures
-in py.test.
+pytest, is really nice. This is a main reason for using pytest for me. Another reason is the design of fixtures
+in pytest.
 
-Switching an existing test suite from Nose to py.test is feasible even without nose2pytest, as it requires 
+Switching an existing test suite from Nose to pytest is feasible even without nose2pytest, as it requires
 relatively little work: *relatively* as in, you will probably only need a few modifications, all achievable 
 manually, to get the same test coverage and results. A few gotchas: 
   
 - test classes that have ``__init__`` will be ignored, those will have to be moved (usually, into class's 
   ``setup_class()``)
-- the ``setup.cfg`` may have to be edited since test discovery rules are slightly more strict with py.test
+- the ``setup.cfg`` may have to be edited since test discovery rules are slightly more strict with pytest
 - the order of tests may be different, but in general that should not matter
 - all test modules are imported up-front, so some test modules may need adjustment such as moving some 
   code from the top of the test module into its ``setup_module()`` 
@@ -79,14 +79,14 @@ manually, to get the same test coverage and results. A few gotchas:
 Once the above has been done to an existing code base, you don't really have to do anything else. However, your test 
 suite now has an additional third-party test dependency (Nose), just because of those ``assert_*`` functions used all 
 over the place. Moreover, there is no longer one obvious way to do things in your test suite: existing test code 
-uses ``nose.tools.assert_*`` functions, yet with py.test you can use raw assertions. If you add tests, which of 
+uses ``nose.tools.assert_*`` functions, yet with pytest you can use raw assertions. If you add tests, which of
 these two approaches should a developer use? If you modify existing tests, should new assertions use raw assert? 
 Should the remaining test method, test class, or test module be updated? A test module can contain hundreds of 
 calls to ``nose.tools.assert_*`` functions, is a developer to manually go through each one to convert it? Painful and 
 error prone, in general not feasible to do manually. 
 
-This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to py.test,
-but also have only py.test as a dependency, and have one obvious way to write assertions in the test suite. 
+This is why I developed nose2pytest: I wanted to migrate my pypubsub project's test suite from Nose to pytest,
+but also have only pytest as a dependency, and have one obvious way to write assertions in the test suite.
   
 
 Requirements
@@ -102,7 +102,7 @@ Nose 1.3.7 on Windows 7 Pro 64. If you have successfully used nose2pytest with o
 kindly let me know (via github). 
 
 The pytest package namespace will be extended with ``assert_`` functions that are not converted by the script
-only if, err, you have py.test installed!
+only if, err, you have pytest installed!
 
 
 Status
@@ -187,7 +187,7 @@ Not every ``assert_*`` function from ``nose.tools`` is converted by nose2pytest:
     
    The nose2pytest distribution contains a module, ``assert_tools.py`` which defines these utility functions to 
    contain the equivalent raw assert statement. Copy the module into your test folder or into the pytest package 
-   and change your test code's ``from nose.tools import ...`` statements accordingly. Py.test introspection will 
+   and change your test code's ``from nose.tools import ...`` statements accordingly. pytest introspection will
    provide error information on assertion failure.
     
 3. Some Nose functions don't have a one-line assert statement equivalent, they have to remain utility functions:
