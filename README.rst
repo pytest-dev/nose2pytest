@@ -1,7 +1,7 @@
 .. image:: https://badge.fury.io/py/nose2pytest.svg
     :target: https://badge.fury.io/py/nose2pytest
-.. image:: https://img.shields.io/travis/pytest-dev/nose2pytest.svg
-    :target: https://img.shields.io/travis/pytest-dev/nose2pytest
+.. image:: https://github.com/pytest-dev/nose2pytest/workflows/Test/badge.svg
+    :target: https://github.com/pytest-dev/nose2pytest/actions
 
 
 .. contents::
