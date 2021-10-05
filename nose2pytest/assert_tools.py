@@ -85,8 +85,8 @@ class _Dummy(unittest.TestCase):
 _t = _Dummy('do_nothing')
 
 assert_raises_regex=_t.assertRaisesRegex,
-assert_raises_regexp=_t.assertRaisesRegexp,
-assert_regexp_matches=_t.assertRegexpMatches,
+assert_raises_regexp=_t.assertRaisesRegex,
+assert_regexp_matches=_t.assertRegex,
 assert_warns_regex=_t.assertWarnsRegex,
 
 del _Dummy
