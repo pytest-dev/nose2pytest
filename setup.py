@@ -5,7 +5,6 @@ setup(
         name='nose2pytest',
         version='1.0.8',
         packages=['nose2pytest'],
-        # py_modules=['assert_tools', 'nose2pytest'],
         entry_points={
             'console_scripts': [
                 'nose2pytest = nose2pytest.script:main',
@@ -41,5 +40,7 @@ setup(
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
         ],
 )
