@@ -5,7 +5,7 @@ This module is part of the nose2pytest distribution.
 
 This module's assert_ functions provide drop-in replacements for nose.tools.assert_ functions (many of which are
 pep-8-ized extractions from Python's unittest.case.TestCase methods). As such, it can be imported in a test
-suite run by py.test, to replace the nose imports with functions that rely on py.test's assertion
+suite run by pytest, to replace the nose imports with functions that rely on pytest's assertion
 introspection for error reporting.  When combined with running nose2pytest.py on your test suite, this
 module may be sufficient to decrease your test suite's third-party dependencies by 1.
 """
@@ -85,21 +85,26 @@ class _Dummy(unittest.TestCase):
 _t = _Dummy('do_nothing')
 
 assert_raises_regex=_t.assertRaisesRegex,
-assert_raises_regexp=_t.assertRaisesRegexp,
-assert_regexp_matches=_t.assertRegexpMatches,
+assert_raises_regexp=_t.assertRaisesRegex,
+assert_regexp_matches=_t.assertRegex,
 assert_warns_regex=_t.assertWarnsRegex,
 
 del _Dummy
 del _t
 
 
-# py.test integration: add all assert_ function to the pytest package namespace
+# pytest integration: add all assert_ function to the pytest package namespace
 
 # Use similar trick as Nose to bring in bound methods from unittest.TestCase as free functions:
 
+
+def _supported_nose_name(name):
+    return name.startswith('assert_') or name in ('ok_', 'eq_')
+
+
 def pytest_configure():
     for name, obj in globals().items():
-        if name.startswith('assert_'):
+        if _supported_nose_name(name):
             setattr(pytest, name, obj)
 
 

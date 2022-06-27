@@ -19,6 +19,7 @@ setup(
         install_requires=[
             'fissix',
         ],
+        python_requires='>=3.5',
         classifiers=[
             # How mature is this project? Common values are
             #   3 - Alpha
