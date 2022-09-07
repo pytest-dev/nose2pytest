@@ -13,8 +13,8 @@
 4. In the Docker tab in your terminal…
 5. `docker run --rm -it python:3.6 bash`
 6. `python —version`  # Ensure that you are on Python 3.6.15.
-7. `git config --global user.email "you@example.com"`
-8. `git config --global user.name "Your Name"`
+7. `git config --global user.email` "you@example.com"
+8. `git config --global user.name` "Your Name"
 9. `git clone https://github.com/my_github_id/repo_name`
 10. `cd repo_name`
 11. `git remote add upstream  https://github.com/upstream_github_id/repo_name`
