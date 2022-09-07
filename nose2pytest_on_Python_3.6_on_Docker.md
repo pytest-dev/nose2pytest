@@ -1,4 +1,4 @@
-## Upgrade Python tests from nose to purest by running nose2pytest on Python 3.6 on Docker
+## Upgrade Python tests from nose to pytest by running nose2pytest on Python 3.6 on Docker
 ### Assumptions
 * The code that you want to upgrade is in a GitHub repo and you have your own fork.
 * https://pypi.org/project/nose2pytest has not yet been updated to work on versions of Python > 3.6.
