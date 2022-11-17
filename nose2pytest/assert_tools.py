@@ -12,11 +12,10 @@ module may be sufficient to decrease your test suite's third-party dependencies 
 
 import pytest
 import unittest
+import pytest
 
 
 __all__ = [
-    'assert_almost_equal',
-    'assert_not_almost_equal',
     'assert_dict_contains_subset',
 
     'assert_raises_regex',
@@ -24,40 +23,6 @@ __all__ = [
     'assert_regexp_matches',
     'assert_warns_regex',
 ]
-
-
-def assert_almost_equal(a, b, places=7, msg=None):
-    """
-    Fail if the two objects are unequal as determined by their
-    difference rounded to the given number of decimal places
-    and comparing to zero.
-
-    Note that decimal places (from zero) are usually not the same
-    as significant digits (measured from the most signficant digit).
-
-    See the builtin round() function for places parameter.
-    """
-    if msg is None:
-        assert round(abs(b - a), places) == 0
-    else:
-        assert round(abs(b - a), places) == 0, msg
-
-
-def assert_not_almost_equal(a, b, places=7, msg=None):
-    """
-    Fail if the two objects are equal as determined by their
-    difference rounded to the given number of decimal places
-    and comparing to zero.
-
-    Note that decimal places (from zero) are usually not the same
-    as significant digits (measured from the most signficant digit).
-
-    See the builtin round() function for places parameter.
-    """
-    if msg is None:
-        assert round(abs(b - a), places) != 0
-    else:
-        assert round(abs(b - a), places) != 0, msg
 
 
 def assert_dict_contains_subset(subset, dictionary, msg=None):
