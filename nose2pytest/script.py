@@ -470,9 +470,7 @@ class FixAssertBinOp(FixAssert2Args):
 
     conversions = dict(
         assert_equal='a == b',
-        assert_equals='a == b',
         assert_not_equal='a != b',
-        assert_not_equals='a != b',
 
         assert_list_equal='a == b',
         assert_dict_equal='a == b',
@@ -508,9 +506,7 @@ class FixAssertAlmostEq(FixAssertBase):
 
     conversions = dict(
         assert_almost_equal='a == pytest.approx(b, abs=delta)',
-        assert_almost_equals='a == pytest.approx(b, abs=delta)',
         assert_not_almost_equal='a != pytest.approx(b, abs=delta)',
-        assert_not_almost_equals='a != pytest.approx(b, abs=delta)',
     )
 
     @override(FixAssertBase)

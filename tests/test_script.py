@@ -210,13 +210,9 @@ class Test2Args:
     def test_same_results(self):
         check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
         check_fails(refac,  'assert_equal(123, 456)', 'assert 123 == 456')
-        check_passes(refac, 'assert_equals(123, 123)', 'assert 123 == 123')
-        check_fails(refac,  'assert_equals(123, 456)', 'assert 123 == 456')
 
         check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
         check_fails(refac,  'assert_not_equal(123, 123)', 'assert 123 != 123')
-        check_passes(refac, 'assert_not_equals(123, 456)', 'assert 123 != 456')
-        check_fails(refac,  'assert_not_equals(123, 123)', 'assert 123 != 123')
 
         check_passes(refac, 'assert_list_equal([123, 456], [123, 456])', 'assert [123, 456] == [123, 456]')
         check_fails(refac,  'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
@@ -307,19 +303,6 @@ class Test3Args:
                     'assert_almost_equal(123.456, 124, delta=0.1)',
                     'assert 123.456 == pytest.approx(124, abs=0.1)')
 
-        check_passes(refac,
-                     'assert_almost_equals(123.456, 123.5, delta=0.1)',
-                     'assert 123.456 == pytest.approx(123.5, abs=0.1)')
-        check_passes(refac,
-                     'assert_almost_equals(123.456, 123.5, delta=0.2, msg="text")',
-                     'assert 123.456 == pytest.approx(123.5, abs=0.2), "text"')
-        check_passes(refac,
-                     'assert_almost_equals(123.456, 123.5, msg="text", delta=0.3)',
-                     'assert 123.456 == pytest.approx(123.5, abs=0.3), "text"')
-        check_fails(refac,
-                    'assert_almost_equals(123.456, 124, delta=0.1)',
-                    'assert 123.456 == pytest.approx(124, abs=0.1)')
-
     def test_not_almost_equal(self):
         check_passes(refac,
                      'assert_not_almost_equal(123.456, 123.5, delta=0.01)',
@@ -334,19 +317,6 @@ class Test3Args:
                     'assert_not_almost_equal(123.456, 124, delta=0.6)',
                     'assert 123.456 != pytest.approx(124, abs=0.6)')
 
-        check_passes(refac,
-                     'assert_not_almost_equals(123.456, 123.5, delta=0.01)',
-                     'assert 123.456 != pytest.approx(123.5, abs=0.01)')
-        check_passes(refac,
-                     'assert_not_almost_equals(123.456, 123.5, delta=0.02, msg="text")',
-                     'assert 123.456 != pytest.approx(123.5, abs=0.02), "text"')
-        check_passes(refac,
-                     'assert_not_almost_equals(123.456, 123.5, msg="text", delta=0.03)',
-                     'assert 123.456 != pytest.approx(123.5, abs=0.03), "text"')
-        check_fails(refac,
-                    'assert_not_almost_equals(123.456, 124, delta=0.6)',
-                    'assert 123.456 != pytest.approx(124, abs=0.6)')
-
     def test_places(self):
         check_transformation('assert_almost_equal(123.456, 124, places=1)',
                              'assert 123.456 == pytest.approx(124, abs=1e-1)')
@@ -356,9 +326,11 @@ class Test3Args:
                      'assert_almost_equal(123.456, 123.450, places=1)',
                      'assert 123.456 == pytest.approx(123.450, abs=1e-1)')
 
+
 class TestAssertTools:
 
     def test_almost(self):
+        # these functions get added on load, so it's possible that the IDE will not find them:
         from pytest import assert_almost_equal, assert_not_almost_equal
 
         assert_almost_equal(1, 1.00001, 4)

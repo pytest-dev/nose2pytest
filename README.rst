@@ -124,9 +124,7 @@ assert_is_none(a[, msg])                     assert a is None[, msg]
 assert_is_not_none(a[, msg])                 assert a is not None[, msg]
 -------------------------------------------- -----------------------------------------------------------------
 assert_equal(a,b[, msg])                     assert a == b[, msg]
-assert_equals(a,b[, msg])                    assert a == b[, msg]
 assert_not_equal(a,b[, msg])                 assert a != b[, msg]
-assert_not_equals(a,b[, msg])                assert a != b[, msg]
 assert_list_equal(a,b[, msg])                assert a == b[, msg]
 assert_dict_equal(a,b[, msg])                assert a == b[, msg]
 assert_set_equal(a,b[, msg])                 assert a == b[, msg]
@@ -147,10 +145,8 @@ assert_count_equal(a,b[, msg])               assert collections.Counter(a) == co
 assert_not_regex(a,b[, msg])                 assert not re.search(b, a)[, msg]
 assert_regex(a,b[, msg])                     assert re.search(b, a)[, msg]
 -------------------------------------------- -----------------------------------------------------------------
-assert_almost_equal(a,b, delta[, msg])       assert abs(a - b) <= delta[, msg]
-assert_almost_equals(a,b, delta[, msg])      assert abs(a - b) <= delta[, msg]
-assert_not_almost_equal(a,b, delta[, msg])   assert abs(a - b) > delta[, msg]
-assert_not_almost_equals(a,b, delta[, msg])  assert abs(a - b) > delta[, msg]
+assert_almost_equal(a,b, delta[, msg])       assert a == pytest.approx(b, abs=delta)[, msg]
+assert_not_almost_equal(a,b, delta[, msg])   assert a != pytest.approx(b, abs=delta)[, msg]
 ============================================ =================================================================
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
