@@ -52,10 +52,26 @@ def override(BaseClass):
 grammar = pygram.python_grammar
 driver = pgen2.driver.Driver(grammar, convert=pytree.convert, logger=log)
 
-PATTERN_ONE_ARG_OR_KWARG = """power< 'func' trailer< '(' not(arglist) obj1=any                         ')' > >"""
-PATTERN_ONE_ARG = """power< 'func' trailer< '(' not(arglist | argument<any '=' any>) obj1=any ')' > >"""
-PATTERN_ONE_KWARG = """power< 'func' trailer< '(' obj1=argument< any '=' any >                  ')' > >"""
-PATTERN_TWO_ARGS_OR_KWARGS = """power< 'func' trailer< '(' arglist< obj1=any ',' obj2=any >              ')' > >"""
+PATTERN_ONE_ARG_OR_KWARG = """
+    power< 'func' trailer< '(' 
+        not(arglist) obj1=any
+    ')' > >
+    """
+
+PATTERN_ONE_ARG = """
+    power< 'func' trailer< '(' 
+        not(arglist | argument<any '=' any>) obj1=any 
+    ')' > >"""
+
+PATTERN_ONE_KWARG = """
+    power< 'func' trailer< '(' 
+        obj1=argument< any '=' any >                  
+    ')' > >"""
+
+PATTERN_TWO_ARGS_OR_KWARGS = """
+    power< 'func' trailer< '(' 
+        arglist< obj1=any ',' obj2=any >              
+    ')' > >"""
 
 PATTERN_1_OR_2_ARGS = """
     power< '{}' trailer< '('
