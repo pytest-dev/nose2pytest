@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
-        version='1.0.8',
+        version='1.0.9',
         packages=['nose2pytest'],
         # py_modules=['assert_tools', 'nose2pytest'],
         entry_points={
@@ -41,5 +41,8 @@ setup(
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
         ],
 )
