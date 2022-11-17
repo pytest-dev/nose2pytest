@@ -7,7 +7,6 @@ import pytest
 
 from nose2pytest.script import NoseConversionRefactoringTool
 
-
 log = logging.getLogger('nose2pytest')
 
 nosetools = {}
@@ -209,68 +208,72 @@ class Test2Args:
 
     def test_same_results(self):
         check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
-        check_fails(refac,  'assert_equal(123, 456)', 'assert 123 == 456')
+        check_fails(refac, 'assert_equal(123, 456)', 'assert 123 == 456')
 
         check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
-        check_fails(refac,  'assert_not_equal(123, 123)', 'assert 123 != 123')
+        check_fails(refac, 'assert_not_equal(123, 123)', 'assert 123 != 123')
 
         check_passes(refac, 'assert_list_equal([123, 456], [123, 456])', 'assert [123, 456] == [123, 456]')
-        check_fails(refac,  'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
+        check_fails(refac, 'assert_list_equal([123, 123], [123, 456])', 'assert [123, 123] == [123, 456]')
 
         check_passes(refac, 'assert_tuple_equal((123, 456), (123, 456))', 'assert (123, 456) == (123, 456)')
-        check_fails(refac,  'assert_tuple_equal((123, 123), (123, 456))', 'assert (123, 123) == (123, 456)')
+        check_fails(refac, 'assert_tuple_equal((123, 123), (123, 456))', 'assert (123, 123) == (123, 456)')
 
         check_passes(refac, 'assert_set_equal({123, 456}, {123, 456})', 'assert {123, 456} == {123, 456}')
-        check_fails(refac,  'assert_set_equal({123, 123}, {123, 456})', 'assert {123, 123} == {123, 456}')
+        check_fails(refac, 'assert_set_equal({123, 123}, {123, 456})', 'assert {123, 123} == {123, 456}')
 
-        check_passes(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=456))', 'assert dict(a=123, b=456) == dict(a=123, b=456)')
-        check_fails(refac,  'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=123))', 'assert dict(a=123, b=456) == dict(a=123, b=123)')
-        check_fails(refac,  'assert_dict_equal(dict(a=123, b=456), dict(a=123, c=456))', 'assert dict(a=123, b=456) == dict(a=123, c=456)')
+        check_passes(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=456))',
+                     'assert dict(a=123, b=456) == dict(a=123, b=456)')
+        check_fails(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, b=123))',
+                    'assert dict(a=123, b=456) == dict(a=123, b=123)')
+        check_fails(refac, 'assert_dict_equal(dict(a=123, b=456), dict(a=123, c=456))',
+                    'assert dict(a=123, b=456) == dict(a=123, c=456)')
 
-        check_passes(refac, 'assert_multi_line_equal("""1\n2\n""", """1\n2\n""")', 'assert """1\n2\n""" == """1\n2\n"""')
-        check_fails(refac,  'assert_multi_line_equal("""1\n2\n""", """1\n3\n""")', 'assert """1\n2\n""" == """1\n3\n"""')
+        check_passes(refac, 'assert_multi_line_equal("""1\n2\n""", """1\n2\n""")',
+                     'assert """1\n2\n""" == """1\n2\n"""')
+        check_fails(refac, 'assert_multi_line_equal("""1\n2\n""", """1\n3\n""")', 'assert """1\n2\n""" == """1\n3\n"""')
 
-        check_passes(refac, 'assert_greater(123, 1)',   'assert 123 > 1'  )
-        check_fails(refac,  'assert_greater(123, 123)', 'assert 123 > 123')
-        check_fails(refac,  'assert_greater(123, 456)', 'assert 123 > 456')
+        check_passes(refac, 'assert_greater(123, 1)', 'assert 123 > 1')
+        check_fails(refac, 'assert_greater(123, 123)', 'assert 123 > 123')
+        check_fails(refac, 'assert_greater(123, 456)', 'assert 123 > 456')
 
-        check_passes(refac, 'assert_greater_equal(123, 1)',   'assert 123 >= 1'  )
+        check_passes(refac, 'assert_greater_equal(123, 1)', 'assert 123 >= 1')
         check_passes(refac, 'assert_greater_equal(123, 123)', 'assert 123 >= 123')
-        check_fails(refac,  'assert_greater_equal(123, 456)', 'assert 123 >= 456')
+        check_fails(refac, 'assert_greater_equal(123, 456)', 'assert 123 >= 456')
 
         check_passes(refac, 'assert_less(123, 456)', 'assert 123 < 456')
-        check_fails(refac,  'assert_less(123, 123)', 'assert 123 < 123')
-        check_fails(refac,  'assert_less(123, 1)',   'assert 123 < 1'  )
+        check_fails(refac, 'assert_less(123, 123)', 'assert 123 < 123')
+        check_fails(refac, 'assert_less(123, 1)', 'assert 123 < 1')
 
         check_passes(refac, 'assert_less_equal(123, 456)', 'assert 123 <= 456')
         check_passes(refac, 'assert_less_equal(123, 123)', 'assert 123 <= 123')
-        check_fails(refac,  'assert_less_equal(123, 1)'  , 'assert 123 <= 1'  )
+        check_fails(refac, 'assert_less_equal(123, 1)', 'assert 123 <= 1')
 
         check_passes(refac, 'assert_in(123, [123, 456])', 'assert 123 in [123, 456]')
-        check_fails(refac,  'assert_in(123, [789, 456])', 'assert 123 in [789, 456]')
+        check_fails(refac, 'assert_in(123, [789, 456])', 'assert 123 in [789, 456]')
 
         check_passes(refac, 'assert_not_in(123, [789, 456])', 'assert 123 not in [789, 456]')
-        check_fails(refac,  'assert_not_in(123, [123, 456])', 'assert 123 not in [123, 456]')
+        check_fails(refac, 'assert_not_in(123, [123, 456])', 'assert 123 not in [123, 456]')
 
         check_passes(refac, 'assert_is(123, 123)', 'assert 123 is 123')
-        check_fails(refac,  'assert_is(123, 1)', 'assert 123 is 1')
+        check_fails(refac, 'assert_is(123, 1)', 'assert 123 is 1')
 
         check_passes(refac, 'assert_is_not(123, 1)', 'assert 123 is not 1')
-        check_fails(refac,  'assert_is_not(123, 123)', 'assert 123 is not 123')
+        check_fails(refac, 'assert_is_not(123, 123)', 'assert 123 is not 123')
 
         check_passes(refac, 'assert_is_instance(123, int)', 'assert isinstance(123, int)')
-        check_fails(refac,  'assert_is_instance(123, float)', 'assert isinstance(123, float)')
+        check_fails(refac, 'assert_is_instance(123, float)', 'assert isinstance(123, float)')
 
         check_passes(refac, 'assert_count_equal([456, 789, 456], [456, 456, 789])',
                      'assert collections.Counter([456, 789, 456]) == collections.Counter([456, 456, 789])')
-        check_fails(refac,  'assert_count_equal([789, 456], [456])',
+        check_fails(refac, 'assert_count_equal([789, 456], [456])',
                     'assert collections.Counter([789, 456]) == collections.Counter([456])')
 
         check_passes(refac, 'assert_regex("125634", "12.*34")', 'assert re.search("12.*34","125634")')
-        check_fails(refac,  'assert_regex("125678", "12.*34")', 'assert re.search("12.*34","125678")')
+        check_fails(refac, 'assert_regex("125678", "12.*34")', 'assert re.search("12.*34","125678")')
 
         check_passes(refac, 'assert_not_regex("125678", "12.*34")', 'assert not re.search("12.*34","125678")')
-        check_fails(refac,  'assert_not_regex("125634", "12.*34")', 'assert not re.search("12.*34","125634")')
+        check_fails(refac, 'assert_not_regex("125634", "12.*34")', 'assert not re.search("12.*34","125634")')
 
 
 class Test3Args:
@@ -289,21 +292,33 @@ class Test3Args:
         check_transformation('assert_almost_equal(a or b, c >> d, delta=0.1)',
                              'assert (a or b) == pytest.approx((c >> d), abs=0.1)')
 
-    def test_almost_equal(self):
-        check_passes(refac,
-                     'assert_almost_equal(123.456, 123.5, delta=0.1)',
+    def test_almost_equal_with_delta(self):
+        check_transformation('assert_almost_equal(123.456, 124, delta=0.6, msg="reason")',
+                             'assert 123.456 == pytest.approx(124, abs=0.6), "reason"')
+        check_transformation('assert_almost_equal(123.456, 124, msg="reason", delta=0.6)',
+                             'assert 123.456 == pytest.approx(124, abs=0.6), "reason"')
+
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.1)',
                      'assert 123.456 == pytest.approx(123.5, abs=0.1)')
-        check_passes(refac,
-                     'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")',
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, delta=0.2, msg="text")',
                      'assert 123.456 == pytest.approx(123.5, abs=0.2), "text"')
-        check_passes(refac,
-                     'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)',
+        check_passes(refac, 'assert_almost_equal(123.456, 123.5, msg="text", delta=0.3)',
                      'assert 123.456 == pytest.approx(123.5, abs=0.3), "text"')
-        check_fails(refac,
-                    'assert_almost_equal(123.456, 124, delta=0.1)',
+        check_fails(refac, 'assert_almost_equal(123.456, 124, delta=0.1)',
                     'assert 123.456 == pytest.approx(124, abs=0.1)')
 
     def test_not_almost_equal(self):
+        check_transformation('assert_not_almost_equal(123.456, 124, msg="reason")',
+                             'assert 123.456 != pytest.approx(124, abs=1e-7), "reason"')
+        check_transformation('assert_not_almost_equal(123.456, 124, delta=0.6, msg="reason")',
+                             'assert 123.456 != pytest.approx(124, abs=0.6), "reason"')
+        check_transformation('assert_not_almost_equal(123.456, 124, msg="reason", delta=0.6)',
+                             'assert 123.456 != pytest.approx(124, abs=0.6), "reason"')
+        check_transformation('assert_not_almost_equal(123.456, 124, places=4, msg="reason")',
+                             'assert 123.456 != pytest.approx(124, abs=1e-4), "reason"')
+        check_transformation('assert_not_almost_equal(123.456, 124, msg="reason", places=4)',
+                             'assert 123.456 != pytest.approx(124, abs=1e-4), "reason"')
+
         check_passes(refac,
                      'assert_not_almost_equal(123.456, 123.5, delta=0.01)',
                      'assert 123.456 != pytest.approx(123.5, abs=0.01)')
@@ -317,11 +332,21 @@ class Test3Args:
                     'assert_not_almost_equal(123.456, 124, delta=0.6)',
                     'assert 123.456 != pytest.approx(124, abs=0.6)')
 
-    def test_places(self):
+    def test_almost_equal_with_places(self):
+        check_transformation('assert_almost_equal(123.456, 124)',
+                             'assert 123.456 == pytest.approx(124, abs=1e-7)')
+        check_transformation('assert_almost_equal(123.456, 124, msg="reason")',
+                             'assert 123.456 == pytest.approx(124, abs=1e-7), "reason"')
+
         check_transformation('assert_almost_equal(123.456, 124, places=1)',
                              'assert 123.456 == pytest.approx(124, abs=1e-1)')
-        check_transformation('assert_almost_equal(123.456, 124, places=7)',
-                             'assert 123.456 == pytest.approx(124, abs=1e-7)')
+        check_transformation('assert_almost_equal(123.456, 124, places=6)',
+                             'assert 123.456 == pytest.approx(124, abs=1e-6)')
+        check_transformation('assert_almost_equal(123.456, 124, places=6, msg="reason")',
+                             'assert 123.456 == pytest.approx(124, abs=1e-6), "reason"')
+        check_transformation('assert_almost_equal(123.456, 124, msg="reason", places=6)',
+                             'assert 123.456 == pytest.approx(124, abs=1e-6), "reason"')
+
         check_passes(refac,
                      'assert_almost_equal(123.456, 123.450, places=1)',
                      'assert 123.456 == pytest.approx(123.450, abs=1e-1)')

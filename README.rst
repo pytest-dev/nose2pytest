@@ -145,8 +145,12 @@ assert_count_equal(a,b[, msg])               assert collections.Counter(a) == co
 assert_not_regex(a,b[, msg])                 assert not re.search(b, a)[, msg]
 assert_regex(a,b[, msg])                     assert re.search(b, a)[, msg]
 -------------------------------------------- -----------------------------------------------------------------
+assert_almost_equal(a,b[, msg])              assert a == pytest.approx(b, abs=1e-7)[, msg]
 assert_almost_equal(a,b, delta[, msg])       assert a == pytest.approx(b, abs=delta)[, msg]
+assert_almost_equal(a, b, places[, msg])     assert a == pytest.approx(b, abs=1e-places)[, msg]
+assert_not_almost_equal(a,b[, msg])          assert a != pytest.approx(b, abs=1e-7)[, msg]
 assert_not_almost_equal(a,b, delta[, msg])   assert a != pytest.approx(b, abs=delta)[, msg]
+assert_not_almost_equal(a,b, places[, msg])  assert a != pytest.approx(b, abs=1e-places)[, msg]
 ============================================ =================================================================
 
 The script adds parentheses around ``a`` and/or ``b`` if operator precedence would change the interpretation of the 
@@ -175,10 +179,6 @@ Not every ``assert_*`` function from ``nose.tools`` is converted by nose2pytest:
      
 2. Some Nose functions could be transformed but the readability would be decreased: 
    
-   - ``assert_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) == 0``
-   - ``assert_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) == 0``
-   - ``assert_not_almost_equal(a, b, places)`` -> ``assert round(abs(b-a), places) != 0``
-   - ``assert_not_almost_equal(a, b)`` -> ``assert round(abs(b-a), 7) != 0``
    - ``assert_dict_contains_subset(a,b)`` -> ``assert set(b.keys()) >= a.keys() and {k: b[k] for k in a if k in b} == a``
     
    The nose2pytest distribution contains a module, ``assert_tools.py`` which defines these utility functions to 

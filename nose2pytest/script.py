@@ -73,8 +73,9 @@ PATTERN_2_OR_3_ARGS = """
 
 PATTERN_ALMOST_ARGS = """
     power< '{}' trailer< '('
-        ( arglist< aaa=any ',' bbb=any ',' delta=any [','] >
-        | arglist< aaa=any ',' bbb=any ',' delta=any ',' msg=any > )
+        ( arglist< aaa=any ',' bbb=any [','] >
+        | arglist< aaa=any ',' bbb=any ',' arg3=any [','] >
+        | arglist< aaa=any ',' bbb=any ',' arg3=any ',' arg4=any > )
     ')' > >
     """
 
@@ -112,7 +113,7 @@ elif sys.version_info.minor == 6:
     GENERATOR_TYPE = 261
 
 else:
-    raise RuntimeError('nose2pytest must be run using Python in [3.4, 3.5, 3.6]')
+    raise RuntimeError('nose2pytest must be run using Python 3.4 to 3.11')
 
 # these operators require parens around function arg if binop is + or -
 ADD_SUB_GROUP_TOKENS = (
@@ -511,42 +512,77 @@ class FixAssertAlmostEq(FixAssertBase):
 
     @override(FixAssertBase)
     def _transform_dest(self, assert_arg_test_node: PyNode, results: {str: PyNode}) -> bool:
-        delta = results["delta"].clone()
-        if not delta.children:
-            return False
-
         aaa = results["aaa"].clone()
         bbb = results["bbb"].clone()
 
+        # first arg
         dest1 = self._get_node(assert_arg_test_node, self._arg_paths[0])
         new_aaa = wrap_parens_for_addsub(aaa)
         dest1.replace(new_aaa)
         adjust_prefix_first_arg(new_aaa, results["aaa"].prefix)
 
+        # second arg
         dest2 = self._get_node(assert_arg_test_node, self._arg_paths[1])
         new_bbb = wrap_parens_for_addsub(bbb)
         if get_prev_sibling(dest2).type in NEWLINE_OK_TOKENS:
             new_bbb.prefix = ''
         dest2.replace(new_bbb)
 
+        # third arg (optional)
         dest3 = self._get_node(assert_arg_test_node, self._arg_paths[2])
-        if delta.children[0] == PyLeaf(token.NAME, 'delta'):
-            delta_val = delta.children[2]
-            delta_val.prefix = ""
-            wrapped_delta_val = wrap_parens_for_comparison(delta_val)
+
+        if "arg3" not in results:
+            # then only 2 args so `places` defaults to '7', delta to None and 'msg' to "":
+            self._use_places_default(dest3)
+            return True
+
+        # NOTE: arg3 could be places or delta, or even msg
+        arg3 = results["arg3"].clone()
+        if "arg4" not in results:
+            if arg3.children[0] == PyLeaf(token.NAME, 'msg'):
+                self._fix_results_err_msg_arg(results, arg3)
+                self._use_places_default(dest3)
+                return True
+
+            return self._process_if_arg_is_places_or_delta(arg3, dest3)
+
+        # we have 4 args: msg could be last, or it could be third:
+        # first try assuming 3rd arg is places/delta:
+        if self._process_if_arg_is_places_or_delta(arg3, dest3):
+            self._fix_results_err_msg_arg(results, results["arg4"].clone())
+            return True
+
+        # arg3 was not places/delta, try msg:
+        if arg3.children[0] == PyLeaf(token.NAME, 'msg'):
+            self._fix_results_err_msg_arg(results, arg3)
+            delta_or_places = results["arg4"].clone()
+            return self._process_if_arg_is_places_or_delta(delta_or_places, dest3)
+
+        else:
+            # if arg4 name is not msg, no match:
+            return False
+
+    def _use_places_default(self, abs_dest: PyNode):
+        places_node = PyLeaf(token.NUMBER, '7', prefix="1e-")
+        abs_dest.replace(places_node)
+
+    def _fix_results_err_msg_arg(self, results: {str: PyNode}, err_msg_node: PyNode):
+        # caller will look for 'msg' not 'arg3' so fix this:
+        err_msg_node.children[2].prefix = ""
+        results['msg'] = err_msg_node  # the caller will look for this
+
+    def _process_if_arg_is_places_or_delta(self, arg3: PyNode, dest3: PyNode) -> bool:
+        if arg3.children[0] == PyLeaf(token.NAME, 'delta'):
+            arg3_val = arg3.children[2]
+            arg3_val.prefix = ""
+            wrapped_delta_val = wrap_parens_for_comparison(arg3_val)
             dest3.replace(wrapped_delta_val)
 
-        elif delta.children[0] == PyLeaf(token.NAME, 'places'):
-            delta_val = delta.children[2]
-            delta_val.prefix = "1e-"
-            wrapped_delta_val = wrap_parens_for_comparison(delta_val)
-            dest3.replace(wrapped_delta_val)
-
-        elif delta.children[0] == PyLeaf(token.NAME, 'msg'):
-            delta_val = results['msg'].children[2]
-            delta_val.prefix = ""
-            dest3.replace(wrap_parens_for_comparison(delta_val))
-            results['msg'] = delta
+        elif arg3.children[0] == PyLeaf(token.NAME, 'places'):
+            arg3_val = arg3.children[2]
+            arg3_val.prefix = "1e-"
+            wrapped_places_val = wrap_parens_for_comparison(arg3_val)
+            dest3.replace(wrapped_places_val)
 
         else:
             return False
