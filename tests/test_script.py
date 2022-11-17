@@ -364,17 +364,6 @@ class Test3Args:
 
 class TestAssertTools:
 
-    def test_almost(self):
-        # these functions get added on load, so it's possible that the IDE will not find them:
-        from pytest import assert_almost_equal, assert_not_almost_equal
-
-        assert_almost_equal(1, 1.00001, 4)
-        assert_not_almost_equal(1, 1.01, 3)
-        pytest.raises(AssertionError, assert_almost_equal, 1, 1.01, 5)
-        pytest.raises(AssertionError, assert_not_almost_equal, 1, 1.00001, 2)
-        # assert_almost_equal(1, 1.01, 5)
-        # assert_not_almost_equal(1, 1.00001, 2)
-
     def test_dict_keys_subset(self):
         dict1 = dict(a=1, b=2, c=3)
 
