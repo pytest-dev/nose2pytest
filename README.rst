@@ -421,6 +421,19 @@ delta, and their paths are 0, (2, 2, 1, 0) and (2, 2, 1, 2, 2) respectively (whe
 1 item, there is no need to use a tuple).
 
 
+Maintenance
+-----------
+
+- Clone or fork the git repo, create a branch
+- Install `pytest` and `nose` on your system: `python -m pip install pytest nose`
+- Modify `nose2pytest/script.py` and `tests/test_script.py`
+- In root folder, run `pytest`
+- Once all tests pass, install tox on your system: on Ubuntu, `python -m pip install tox`
+- Run tox: `tox`
+- Increase the package version in setup.cfg and setup.py
+- Add a python version if latest python is not in `tox.ini`
+
+
 Acknowledgements
 ----------------
 
