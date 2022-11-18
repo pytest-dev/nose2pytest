@@ -21,6 +21,8 @@ import logging
 from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
 from lib2to3.pytree import Node as PyNode, Leaf as PyLeaf
 from lib2to3.pgen2 import token
+from pathlib import Path
+
 from lib2to3.fixer_util import parenthesize
 
 __version__ = "1.0.9"
@@ -629,6 +631,7 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
 
         return pre_fixers, post_fixers
 
+
 def setup():
     # from nose import tools as nosetools
     # import inspect
@@ -652,6 +655,10 @@ def setup():
 
 def main():
     args = setup()
+    if not Path(args.dir_name).exists():
+        print('ERROR: Path "%s" does not exist' % args.dir_name, file=sys.stderr)
+        sys.exit(1)
+
     refac = NoseConversionRefactoringTool(args.verbose)
     refac.refactor_dir(args.dir_name, write=args.write)
 
