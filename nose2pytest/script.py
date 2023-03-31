@@ -17,6 +17,7 @@ http://python3porting.com/fixers.html#find-pattern.
 import sys
 import argparse
 import logging
+from pathlib import Path
 
 from fissix import refactor, fixer_base, pygram, pytree, pgen2
 from fissix.pytree import Node as PyNode, Leaf as PyLeaf
