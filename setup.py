@@ -3,6 +3,7 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
+        version='1.0.10',
         packages=['nose2pytest'],
         entry_points={
             'console_scripts': [
@@ -40,5 +41,6 @@ setup(
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
         ],
 )
