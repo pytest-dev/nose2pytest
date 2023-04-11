@@ -25,7 +25,7 @@ from pathlib import Path
 
 from lib2to3.fixer_util import parenthesize
 
-__version__ = "1.0.9"
+__version__ = "1.0.10"
 
 log = logging.getLogger('nose2pytest')
 
