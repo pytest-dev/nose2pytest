@@ -9,7 +9,7 @@ in your code, you will be able to remove nose as a test dependency of your libra
 
 Requires Python 3.4.
 
-This script relies heavily on lib2to3, using it to find patterns of code to transform and convert transformed
+This script relies heavily on fissix, using it to find patterns of code to transform and convert transformed
 code nodes back into Python source code. The following article was very useful:
 http://python3porting.com/fixers.html#find-pattern.
 """
@@ -17,13 +17,12 @@ http://python3porting.com/fixers.html#find-pattern.
 import sys
 import argparse
 import logging
-
-from lib2to3 import refactor, fixer_base, pygram, pytree, pgen2
-from lib2to3.pytree import Node as PyNode, Leaf as PyLeaf
-from lib2to3.pgen2 import token
 from pathlib import Path
 
-from lib2to3.fixer_util import parenthesize
+from fissix import refactor, fixer_base, pygram, pytree, pgen2
+from fissix.pytree import Node as PyNode, Leaf as PyLeaf
+from fissix.pgen2 import token
+from fissix.fixer_util import parenthesize
 
 __version__ = "1.0.10"
 
@@ -618,7 +617,7 @@ class NoseConversionRefactoringTool(refactor.MultiprocessRefactoringTool):
         super().__init__([], flags)
         level = logging.DEBUG if verbose else logging.INFO
         logging.basicConfig(format='%(name)s: %(message)s', level=level)
-        logger = logging.getLogger('lib2to3.main')
+        logger = logging.getLogger('fissix.main')
 
     def get_fixers(self):
         pre_fixers = []
