@@ -31,24 +31,29 @@ transformed because there is no raw assert statement equivalent, or the equivale
 maintain. They are provided as functions in the pytest namespace via pytest's plugin system.
 
 
-Installation
--------------
-
-From a command shell run ::
-
-  pipx install --python 3.11 nose2pytest@git+https://github.com/pytest-dev/nose2pytest
-
-
 Running
 ------------
 
-From a command shell, ::
+For a one-time conversion use the shell command ::
 
-  nose2pytest path/to/dir/with/python_files
+  pipx run --python 3.11 nose2pytest path/to/dir/with/python_files
   
 This will find all ``.py`` files in the folder tree starting at ``path/to/dir/with/python_files`` and 
 overwrite the original (assuming most users will be running this on a version-controlled code base, this is
 almost always what would be most convenient). Type ``nose2pytest -h`` for other options, such as ``-v``. 
+
+
+Installation
+-------------
+
+For doing multiple conversions use the shell command ::
+
+  pipx install --python 3.11 nose2pytest
+
+For each conversion use the shell command ::
+
+  nose2pytest path/to/dir/with/python_files
+
 
 
 Motivation
@@ -89,9 +94,9 @@ but also have only pytest as a dependency, and have one obvious way to write ass
 Requirements
 -------------
 
-I expect nose2pytest script to run with supported versions of CPython, on any OS supported by a version of Python
-that has lib2to3 compatible with fissix. I expect it to succeed even with quite old versions of Nose (even prior to
-1.0 which came out ca. 2010), and with the new Nose2 test driver. 
+I expect nose2pytest script to run with supported versions of CPython <= v3.11, on any OS supported by a version of
+Python that has lib2to3 compatible with fissix. I expect it to succeed even with quite old versions of Nose (even
+prior to 1.0 which came out ca. 2010) and with the new Nose2 test driver. 
 
 The pytest package namespace will be extended with ``assert_`` functions that are not converted by the script
 only if, err, you have pytest installed!
