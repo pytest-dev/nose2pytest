@@ -55,7 +55,6 @@ For each conversion use the shell command ::
   nose2pytest path/to/dir/with/python_files
 
 
-
 Motivation
 ------------
 
