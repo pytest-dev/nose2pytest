@@ -5,6 +5,8 @@ setup(
         name='nose2pytest',
         version='1.0.10',
         packages=['nose2pytest'],
+        long_description=open('README.rst', encoding="UTF-8").read(),
+        long_description_content_type="text/x-rst",
         entry_points={
             'console_scripts': [
                 'nose2pytest = nose2pytest.script:main',
