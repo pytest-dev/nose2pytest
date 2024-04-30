@@ -420,16 +420,19 @@ Maintenance
 - Run tox: `tox`
 - Add a python version if the latest Python is not in `tox.ini`
 
-Notes for Ubuntu:
-- My experience today installing python 3.5 to 3.11 on Ubuntu 18 was surprisingly not smooth. I had to use these
-  commands:
-  - sudo apt install python3.5 (ok)
-  - sudo apt install python3.x-distutils for x=9,10,11
-  - had to use `python -m pip` intead of just `pip` otherwise wrong version would get found
-  - used `sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.x 1` for all x
-  - used `sudo update-alternatives --config python` to choose which python active
-  - had to install setuptools from git repo otherwise weird pip error (used https://stackoverflow.com/a/69573368/869951)
-  - note however that once the correct tox installed,
+.. note::
+
+    Notes for Ubuntu:
+
+    My experience today installing python 3.5 to 3.11 on Ubuntu 18 was surprisingly not smooth. I had to use these commands:
+
+    * sudo apt install python3.5 (ok)
+    * sudo apt install python3.x-distutils for x=9,10,11
+    * had to use `python -m pip` intead of just `pip` otherwise wrong version would get found
+    * used `sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.x 1` for all x
+    * used `sudo update-alternatives --config python` to choose which python active
+    * had to install setuptools from git repo otherwise weird pip error (used https://stackoverflow.com/a/69573368/869951)
+    * note however that once the correct tox installed,
 
 
 Acknowledgments

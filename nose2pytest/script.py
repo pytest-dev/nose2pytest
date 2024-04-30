@@ -24,7 +24,7 @@ from fissix.pytree import Node as PyNode, Leaf as PyLeaf
 from fissix.pgen2 import token
 from fissix.fixer_util import parenthesize
 
-__version__ = "1.0.10"
+__version__ = "1.0.12"
 
 log = logging.getLogger('nose2pytest')
 
