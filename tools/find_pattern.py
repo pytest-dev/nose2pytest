@@ -47,9 +47,9 @@ import sys
 from io import StringIO
 
 # Local imports
-from lib2to3 import pytree
-from lib2to3.pgen2 import driver
-from lib2to3.pygram import python_symbols, python_grammar
+from fissix import pytree
+from fissix.pgen2 import driver
+from fissix.pygram import python_symbols, python_grammar
 
 driver = driver.Driver(python_grammar, convert=pytree.convert)
 

@@ -3,9 +3,8 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
-        version='1.0.9',
+        version='1.0.10',
         packages=['nose2pytest'],
-        # py_modules=['assert_tools', 'nose2pytest'],
         entry_points={
             'console_scripts': [
                 'nose2pytest = nose2pytest.script:main',
@@ -18,7 +17,10 @@ setup(
         author_email='oliver.schoenborn@gmail.com',
         description='Convert nose.tools.assert_ calls found in your Nose test modules into raw asserts for pytest',
         keywords='nose to pytest conversion',
-
+        install_requires=[
+            'fissix',
+        ],
+        python_requires='>=3.6',
         classifiers=[
             # How mature is this project? Common values are
             #   3 - Alpha
@@ -34,8 +36,6 @@ setup(
             'License :: OSI Approved :: BSD License',
 
             # Specify the Python versions you support here.
-            'Programming Language :: Python :: 3.4',
-            'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
