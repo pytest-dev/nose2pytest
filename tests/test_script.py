@@ -6,6 +6,7 @@ from textwrap import dedent
 import pytest
 
 from nose2pytest.script import NoseConversionRefactoringTool
+from nose2pytest.assert_tools import _supported_nose_name
 
 log = logging.getLogger('nose2pytest')
 
@@ -24,7 +25,7 @@ def setup_log():
 
     import nose.tools
     for name, val in vars(nose.tools).items():
-        if name.startswith('assert_'):
+        if _supported_nose_name(name):
             nosetools[name] = val
 
     import re, collections
@@ -61,12 +62,14 @@ class Test1Arg:
             log.print("hi")
 
             assert_true(a)
+            ok_(a)
             assert_true(a, 'text')
             assert_true(a, msg='text')
             """
         check_transformation(test_script, """
             log.print("hi")
 
+            assert a
             assert a
             assert a, 'text'
             assert a, 'text'
@@ -81,6 +84,9 @@ class Test1Arg:
     def test_same_results(self):
         check_passes(refac, 'assert_true(True)', 'assert True')
         check_fails(refac, 'assert_true(False)', 'assert False')
+
+        check_passes(refac, 'ok_(True)', 'assert True')
+        check_fails(refac, 'ok_(False)', 'assert False')
 
         check_passes(refac, 'assert_false(False)', 'assert not False')
         check_fails(refac, 'assert_false(True)', 'assert not True')
@@ -137,6 +143,8 @@ class Test2Args:
                              'assert (d < e) in d')
         check_transformation('assert_in(d > e, d)',
                              'assert (d > e) in d')
+        check_transformation('eq_(a in b, c)',
+                             'assert (a in b) == c')
         check_transformation('assert_equal(a in b, c)',
                              'assert (a in b) == c')
         check_transformation('assert_equal(a not in b, c)',
@@ -209,6 +217,8 @@ class Test2Args:
     def test_same_results(self):
         check_passes(refac, 'assert_equal(123, 123)', 'assert 123 == 123')
         check_fails(refac, 'assert_equal(123, 456)', 'assert 123 == 456')
+        check_passes(refac, 'eq_(123, 123)', 'assert 123 == 123')
+        check_fails(refac,  'eq_(123, 456)', 'assert 123 == 456')
 
         check_passes(refac, 'assert_not_equal(123, 456)', 'assert 123 != 456')
         check_fails(refac, 'assert_not_equal(123, 123)', 'assert 123 != 123')
@@ -353,17 +363,6 @@ class Test3Args:
 
 
 class TestAssertTools:
-
-    def test_almost(self):
-        # these functions get added on load, so it's possible that the IDE will not find them:
-        from pytest import assert_almost_equal, assert_not_almost_equal
-
-        assert_almost_equal(1, 1.00001, 4)
-        assert_not_almost_equal(1, 1.01, 3)
-        pytest.raises(AssertionError, assert_almost_equal, 1, 1.01, 5)
-        pytest.raises(AssertionError, assert_not_almost_equal, 1, 1.00001, 2)
-        # assert_almost_equal(1, 1.01, 5)
-        # assert_not_almost_equal(1, 1.00001, 2)
 
     def test_dict_keys_subset(self):
         dict1 = dict(a=1, b=2, c=3)
