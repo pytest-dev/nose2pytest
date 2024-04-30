@@ -7,7 +7,7 @@
 .. contents::
 
 
-Overview v1.0.8
+Overview v1.0.9
 ---------------
 
 This package provides a Python script and py.test plugin to help convert Nose-based tests into py.test-based 
