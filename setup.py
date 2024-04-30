@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='nose2pytest',
-        version='1.0.10',
+        version='1.0.11',
         packages=['nose2pytest'],
         long_description=open('README.rst', encoding="UTF-8").read(),
         long_description_content_type="text/x-rst",
